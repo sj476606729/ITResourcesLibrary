@@ -146,8 +146,12 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Business\Currency.cs" />
+    <Compile Include="Business\Interface\Interface.cs" />
+    <Compile Include="Business\Search.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\KindController.cs" />
     <Compile Include="Controllers\loginController.cs" />
+    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\SharedController.cs" />
     <Compile Include="Controllers\tinyMceController.cs" />
     <Compile Include="Global.asax.cs">
@@ -313,6 +317,8 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\tinyMce\Index.cshtml" />
     <Content Include="Views\login\Index.cshtml" />
+    <Content Include="Views\Kind\Index.cshtml" />
+    <Content Include="Views\Search\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

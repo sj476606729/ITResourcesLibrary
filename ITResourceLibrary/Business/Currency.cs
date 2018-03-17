@@ -16,7 +16,7 @@ namespace ITResourceLibrary.Business
             string a = AdminId;
             if (!attrs.Any(p => p.GetType() == typeof(AllowAnonymousAttribute)) && string.IsNullOrEmpty(AdminId))
             {
-                filterContext.HttpContext.Response.Redirect(Url.Action("Index", "login") + "?ReturnUrl=" + GetUrl(filterContext.HttpContext.Request.Url.PathAndQuery), true);
+                //filterContext.HttpContext.Response.Redirect(Url.Action("Index", "login") + "?ReturnUrl=" + GetUrl(filterContext.HttpContext.Request.Url.PathAndQuery), true);
             }
             else
             {
