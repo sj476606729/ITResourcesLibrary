@@ -8,15 +8,21 @@ using System.Web.Mvc;
 
 namespace ITResourceLibrary.Business
 {
+    /// <summary>
+    /// 通用控制器
+    /// </summary>
     public class Currency : Controller
     {
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             var attrs = filterContext.ActionDescriptor.GetCustomAttributes(typeof(AllowAnonymousAttribute), false);
-            string a = AdminId;
             if (!attrs.Any(p => p.GetType() == typeof(AllowAnonymousAttribute)) && string.IsNullOrEmpty(AdminId))
             {
-                //filterContext.HttpContext.Response.Redirect(Url.Action("Index", "login") + "?ReturnUrl=" + GetUrl(filterContext.HttpContext.Request.Url.PathAndQuery), true);
+                try
+                {
+                    filterContext.HttpContext.Response.Redirect(Url.Action("Index", "login") + "?ReturnUrl=" + GetUrl(filterContext.HttpContext.Request.Url.PathAndQuery), true);
+                }
+                catch(Exception e) { }
             }
             else
             {
@@ -41,5 +47,19 @@ namespace ITResourceLibrary.Business
             return JsonConvert.SerializeObject(new { result = value });
         }
         
+        
+    }
+    public class Function
+    {
+        /// <summary>
+        /// 是否私人权限
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns></returns>
+        public bool PublicPermission(string UserName)
+        {
+            if (UserName == "沙俊" && UserName == "沙杰") return true;
+            return false;
+        }
     }
 }

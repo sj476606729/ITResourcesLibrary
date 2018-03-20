@@ -147,10 +147,13 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Business\Currency.cs" />
     <Compile Include="Business\Interface\Interface.cs" />
+    <Compile Include="Business\Models\CodeModel.cs" />
+    <Compile Include="Business\Models\KindModel.cs" />
     <Compile Include="Business\Search.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\KindController.cs" />
     <Compile Include="Controllers\loginController.cs" />
+    <Compile Include="Controllers\OperationController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\SharedController.cs" />
     <Compile Include="Controllers\tinyMceController.cs" />
@@ -159,12 +162,17 @@
     </Compile>
     <Compile Include="Business\Operation.cs" />
     <Compile Include="Helps\SessionHelp.cs" />
+    <Compile Include="Models\AccountViewModel.cs" />
     <Compile Include="Models\BmobDataModel.cs" />
     <Compile Include="Models\CodeModel.cs" />
     <Compile Include="Models\KindModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bootstrap-switch\bootstrap2\bootstrap-switch.css" />
+    <Content Include="Content\bootstrap-switch\bootstrap2\bootstrap-switch.min.css" />
+    <Content Include="Content\bootstrap-switch\bootstrap3\bootstrap-switch.css" />
+    <Content Include="Content\bootstrap-switch\bootstrap3\bootstrap-switch.min.css" />
     <Content Include="Frame\bootstrap\css\bootstrap-theme.css" />
     <Content Include="Frame\bootstrap\css\bootstrap-theme.min.css" />
     <Content Include="Frame\bootstrap\css\bootstrap.css" />
@@ -179,6 +187,8 @@
     <Content Include="Content\Loading.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Scripts\bootstrap-switch.js" />
+    <Content Include="Scripts\bootstrap-switch.min.js" />
     <Content Include="Views\login\css\style2.0.css" />
     <Content Include="Views\login\img\1.png" />
     <Content Include="Views\login\img\page1_0.png" />
@@ -319,6 +329,7 @@
     <Content Include="Views\login\Index.cshtml" />
     <Content Include="Views\Kind\Index.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
+    <Content Include="Views\Operation\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

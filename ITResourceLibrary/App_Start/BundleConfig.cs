@@ -21,8 +21,15 @@ namespace ITResourceLibrary
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js",
-                      "~/Scripts/respond.js"));
+                      "~/Scripts/respond.js", "~/Scripts/bootstrap-switch.min.js"
 
+                      
+                      ));
+            bundles.Add(new StyleBundle("~/Content/bootstrap").Include(
+                "~/Content/bootstrap-switch/bootstrap3/bootstrap-switch.min.css",
+                "~/Content/bootstrap.css"
+
+                        ));
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));

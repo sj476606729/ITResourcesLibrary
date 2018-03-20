@@ -1,4 +1,5 @@
-﻿@{
+﻿@model  ITResourceLibrary.Models.AccountViewModel
+@{
     Layout = null;
 }
 <title>IT资源库</title>
@@ -8,6 +9,7 @@
         font-size: 30px;
         color: #2ec0f6;
     }
+
     .tyg-div {
         z-index: -1000;
         float: left;
@@ -77,18 +79,18 @@
 </style>
 <div class="tyg-div">
     <ul>
-        <li>让</li>
-        <li><div style="margin-left:20px;">数</div></li>
-        <li><div style="margin-left:40px;">据</div></li>
-        <li><div style="margin-left:60px;">改</div></li>
-        <li><div style="margin-left:80px;">变</div></li>
-        <li><div style="margin-left:100px;">生</div></li>
-        <li><div style="margin-left:120px;">活</div></li>
+        <li>量</li>
+        <li><div style="margin-left:20px;">变</div></li>
+        <li><div style="margin-left:40px;">产</div></li>
+        <li><div style="margin-left:60px;">生</div></li>
+        <li><div style="margin-left:80px;">质</div></li>
+        <li><div style="margin-left:100px;">变</div></li>
+
     </ul>
 </div>
 <div id="contPar" class="contPar">
     <div id="page1" style="z-index:1;">
-        <div class="title0">行业智慧集合平台</div>
+        <div class="title0">行业智慧资源集合平台</div>
         <div class="title1">Android、ASP.NET、C#、HTML+CSS+JS</div>
         <div class="imgGroug">
             <ul>
@@ -100,24 +102,33 @@
         <img alt="" class="img3 png" src="~/Views/login/img/page1_3.jpg">
     </div>
 </div>
+<style>
+    li{
+        color:red;
+        font-size:10px;
+    }
+</style>
 <div class="tyg-div-denglv">
-    <div class="tyg-div-form">
-            <h2>登录</h2><p class="tyg-p">欢迎访问  IT资源库</p>
-            @using (Html.BeginForm("Index", "login", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @role = "form", onkeydown = "if(event.keyCode==13){return false;}" }))
-            {
-            <div style="margin:5px 0px;">
-                <input type="text" name="username" placeholder="请输入账号..." />
-            </div>
-            <div style="margin:5px 0px;">
-                <input type="text" name="password" placeholder="请输入密码..." />
-            </div>
+    <div class="tyg-div-form" style="padding:5px">
+        <h2>登录</h2><p class="tyg-p">欢迎访问  IT资源库</p>
+        @using (Html.BeginForm("Index", "login", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @role = "form", onkeydown = "if(event.keyCode==13){return false;}" }))
+    {
+        @ViewBag.error
 
-            <button type="submit" name="id" value="login2">登<span style="width:20px;"></span>录</button>
+        <div style="margin:5px 0px;" class="group" >
+            @Html.TextBoxFor(m=>m.User , "", new { @style = "font-size:18px margin:0; padding:1px; width:100%; height:30px", @placeholder = "请输入账号……",required=false })
 
-            }
+        </div>
+        <div style="margin:5px 0px;">
+            @Html.PasswordFor(m=>m.Password, new { @style = "font-size:18px margin:0; padding:1px; width:100%; height:30px", @placeholder = "请输入密码……", required = false })
+        </div>
+
+        <button type="submit" name="id" value="login2">登<span style="width:20px;"></span>录</button>
+
+}
     </div>
 </div>
 
 
-<script type="text/javascript" src="~/Views/login/js/jquery-1.8.0.min.js" ></script>
+<script type="text/javascript" src="~/Views/login/js/jquery-1.8.0.min.js"></script>
 <script type="text/javascript" src="~/Views/login/js/com.js"></script>

@@ -15,19 +15,19 @@ namespace Search
         BmobWindows Bmob = new BmobWindows();
         Bmob_Initial initial = Bmob_Initial.Initial();
         //搜索排序
-        public string SearchTitle(string Title)
+        public string SearchTitle(string Title,string select)
         {
             Util util = Util.Instance;
             ArrayList list = new ArrayList();
             ArrayList list2 = new ArrayList();
             ArrayList result = new ArrayList();
+            int n_select = int.Parse(select);
             if (Operation.Code_Data == null) { return "还未初始化，请等待"; }
-            foreach(DataRow row in Operation.Code_Data.Rows)
+            if (Operation.listTitles2.Count == Operation.listTitleids2.Count)
             {
-                list.Add(row["Title"]);
-                
+                list.AddRange(Operation.listTitles2[n_select]);
 
-                list2.Add(row["ObjectId"]);
+                list2.AddRange(Operation.listTitleids2[n_select]);
             }
             CallBack callback = new CallBack();
             util.paixu(list, list2, Title, callback);

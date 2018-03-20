@@ -5,7 +5,7 @@ using System.Web;
 
 namespace ITResourceLibrary.Models
 {
-    public class KindModel
+    public class TreeModel
     {
         public string Id { get; set; }
         public string ParentId { get; set; }

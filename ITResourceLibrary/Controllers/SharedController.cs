@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 namespace ITResources.Controllers
 {
     
-    public class SharedController : Currency
+    public class SharedController : Controller
     {
         // GET: Shared
         Operation operation = new Operation();

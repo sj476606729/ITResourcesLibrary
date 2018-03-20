@@ -8,45 +8,77 @@
     <link href="~/Content/Loading.css" rel="stylesheet" />
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    @Styles.Render("~/Content/bootstrap")
     <script src="~/Frame/bootstrap/js/bootstrap-treeview.js"></script>
-    <link href="~/Frame/bootstrap/css/bootstrap.css" rel="stylesheet" />
 </head>
 <body id="body">
 
-    <div style="height:8%;width:100%;background-color:darkslategray;line-height:8%">
-        <table style="height:100%;width:100%">
+    <div style="height:7%;width:100%;background-color:darkslategray;line-height:8%">
+        <table style="height:100%;width:100%;">
             <tr style="height:100%;">
                 <td valign="middle" style="width:5%;"><img style="margin-left:10%; height:4%;" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1520771949944&di=0fbaa60ae3326adb996437f4f833dfb0&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimage%2Fc0%253Dshijue1%252C0%252C0%252C294%252C40%2Fsign%3D91cb81098082b90129a0cb701be4c302%2F4b90f603738da97767252c05ba51f8198618e392.jpg"></td>
                 <td style=" width:5%;color:white">当前登陆:</td>
-                <td style="width:5%;color:white">@Html.Action("GetUserName", "Shared")</td>
+                <td style="width:5%;color:white;cursor:pointer" onclick="Exit()">@Html.Action("GetUserName", "Shared")</td>
                 <td style="width:4%"><label class="control-label" style="color:lightblue;font-size:larger;">总条目</label></td>
-                <td style="width:10%"><label class="form-control" id="Count" style="width:30%;background-color:chocolate; color:aliceblue;">0</label></td>
-                <td valign="middle" style="width:15%"><input type="text" class="form-control" id="kind" style=" width:60%; border:none;background-color:darkslategray;color:chartreuse;text-align:center" placeholder="分类名称" /></td>
-                <td valign="middle" style="width:40%"><input type="text" class="form-control" id="title" style="width:60%; border:none;background-color:darkslategray;color:aqua;font-size:130%; text-align:center" placeholder="代码标题" /></td>
+                <td style="width:5%"><label class="form-control" id="Count" style="width:58%;background-color:chocolate; color:aliceblue;">0</label></td>
+                <td valign="middle" style="width:20%"><input type="text" class="form-control" id="kind" style=" width:90%; border:none;background-color:darkslategray;color:chartreuse;text-align:center" placeholder="分类名称" /></td>
+                <td valign="middle" style="width:30%"><input type="text" class="form-control" id="title" style="width:80%; border:none;background-color:darkslategray;color:aqua;font-size:130%; text-align:center" placeholder="代码标题" /></td>
                 <td style="width:15%"><label id="author" style="color:crimson;font-size:100%;text-align:center"></label></td>
+                <td style="width:5%;color:darkslategray" id="check_div" ><div> <input type="checkbox" name="status" onchange="check_change(this)"  checked  id="check" /></div></td>
             </tr>
+
         </table>
+       
     </div>
+    
     <iframe id="Kind_f" src="@Url.Action("Index","Kind")" style="width:19%;float:left;height:90%;border:none;margin-top:0.5%;margin-left:0.3%"></iframe>
     <iframe id="Search_f" src="@Url.Action("Index","Search")" style="width:0;float:left;height:90%;border:none;margin-top:0.5%;"></iframe>
-    <iframe id="frame" src="@Url.Action("Index","tinyMce")" style="width:79%;float:left;margin-left:0.5%;height:90%;border:none" onclick="Bigger()"></iframe>
- 
-        <div class="container body-content" style="width:0;height:0;float:left">
-            @RenderBody()
-            <hr />
-        </div>
-    
-
+    <iframe id="frame" src="@Url.Action("Index","tinyMce")" style="width:70%;float:left;margin-left:0.5%;height:90%;border:none" onclick="Bigger()"></iframe>
+    <iframe id="Operation"src="@Url.Action("Index","Operation")" style="width:10%;height:90%;border:none; float:left"></iframe>
+    <div class="container body-content" style="width:0;height:0;float:left">
+        @RenderBody()
+        <hr />
+    </div>
 
     @RenderSection("scripts", required: false)
+
+    @*<script>
+        $('#check').val('Visible')
+        $('[name="status"]').bootstrapSwitch({
+            onText: "公开",
+            offText: "私人",
+            onColor: "success",
+            offColor: "warning",
+            size: "mini",
+            onSwitchChange: function (event, state) {
+                if (state == true) {
+                    $(this).val("Visible");
+                } else {
+                    $(this).val("Invisible");
+                }
+            }
+        })
+    </script>*@
     <script>
+        check_change = function (e) {
+            if ($(e).is(':checked')) {
+                $(e).val('Visible')
+            } else {$(e).val('Invisible')}
+
+        }
         $(function () {
             $('#body').css("height", document.documentElement.clientHeight);
             $('#Count').html(@Html.Action("CodeCount","Kind"));
+            var UserName ='@Html.Action("GetUserName", "Shared")';
+            if (UserName != "沙俊" && UserName != "沙杰") {
+                $('#check_div').attr("hidden", "hidden")
+            }
         });
+        Exit = function () {
+            window.location.href='@Url.Action("Index","login")'
+        }
 
-        
-        
+
     </script>
 </body>
 </html>

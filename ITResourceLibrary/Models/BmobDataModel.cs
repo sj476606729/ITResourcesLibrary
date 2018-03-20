@@ -54,7 +54,7 @@ namespace Bmob_space
         public string Title { get; set; }
         public string Code { get; set; }
         public string Author { get; set; }
-
+        public string Visible { get; set; }
 
         //构造函数
         public BmobCodeModel() { }
@@ -85,6 +85,7 @@ namespace Bmob_space
             this.Title = input.getString("Title");
             this.Code = input.getString("Code");
             this.Author = input.getString("Author");
+            this.Visible = input.getString("Visible");
         }
 
         //写字段信息
@@ -95,6 +96,7 @@ namespace Bmob_space
             output.Put("Title", this.Title);
             output.Put("Code", this.Code);
             output.Put("Author", this.Author);
+            output.Put("Visible", this.Visible);
         }
     }
     //分类数据模型

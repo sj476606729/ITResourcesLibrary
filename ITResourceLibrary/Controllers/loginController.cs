@@ -1,4 +1,5 @@
 ﻿using ITResourceLibrary.Helps;
+using ITResourceLibrary.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,19 +17,22 @@ namespace ITResourceLibrary.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult Index(string username,string password,string ReturnUrl)
+        public ActionResult Index(AccountViewModel account)
         {
-
-            if (username == "shajun")
+            
+            if (account.User == "shajun")
             {
-                if (password == "sj76606729") {
+                if (account.Password == "sj76606729") {
                     SessionHelp.Set("UserName", "沙俊");
-                    return Redirect(ReturnUrl); }
+                    return RedirectToAction("Index","Home"); 
+                }
             }
-            else if (username == "shajie") { if (password == "sj76606729") { SessionHelp.Set("UserName", "沙俊"); return RedirectToAction(ReturnUrl); } }
-            else if (username == "chenyu")
-            { if (password == "CHENYU") { SessionHelp.Set("UserName", "陈煜"); return RedirectToAction(ReturnUrl); } }
-
+            else if (account.User == "shajie") { if (account.Password == "a295574220") { SessionHelp.Set("UserName", "沙杰"); return RedirectToAction("Index", "Home"); } }
+            else if (account.User == "chenyu")
+            { if (account.Password == "CHENYU") { SessionHelp.Set("UserName", "陈煜"); return RedirectToAction("Index", "Home"); } }
+            else if (account.User == "xichaoqun")
+            { if (account.Password == "XICHAOQUN") { SessionHelp.Set("UserName", "奚超群"); return RedirectToAction("Index", "Home"); } }
+            ViewBag.error = "账号密码有误";
             return View();
         }
     }

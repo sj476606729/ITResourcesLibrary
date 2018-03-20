@@ -2,17 +2,56 @@
     Layout = null;
 }
 @Scripts.Render("~/bundles/jquery")
+@Styles.Render("~/Content/bootstrap")
 <link href="~/Frame/bootstrap/css/bootstrap.css" rel="stylesheet" />
 <script>
-    var frames, NodeText, Nodeid, NodeAuthor;
+    var frames, NodeText, Nodeid, NodeAuthor, n_typeselect;
+    var ID;
     window.onload = function () {
         frames = window.parent.window.document.getElementById("frame");
+        Kind_f = window.parent.window.document.getElementById("Kind_f");
+        $('#search').on('keypress', function (event) {
+            if (event.keyCode == 13) {
+                Search()
+            }
+
+        });
     }
+
+    function load() {
+            n_type = Kind_f.contentWindow.typeid.length;
+            if (document.getElementById("select_type").options.length != n_type) {
+                document.getElementById("select_type").options.length = 0
+                for (var i = 0; i < n_type; i++) {
+                    addOneItemToSelect("select_type", Kind_f.contentWindow.typeid[i], i.toString());
+                }
+            }
+
+        }
+        @*//@param  objSelectId 将要加入item的目标select组件的id
+        //@param objItemText 将要加入的item显示的内容
+        //@param objItemValue 将要加入的item的值*@
+        //选项添加
+        function addOneItemToSelect(objSelectId, objItemText, objItemValue) {
+            var objSelect = document.getElementById(objSelectId);
+
+            if (null != objSelect && typeof (objSelect) != "undefined") {
+                //判断是否该值的item已经在select中存在
+                var varItem = new Option(objItemText, objItemValue);
+                    objSelect.options.add(varItem);
+
+
+            }
+        }
     function ShowData(e, id) {
         var title = $(e).html();
+        $(ID).css("background-color","white")
+        ID= e;
+        $(e).css("background-color","gainsboro")
         Nodeid = id
         title = title.substring(4, title.length - 5);
         NodeText = title;
+        title = encodeURIComponent(title)
         $.ajax({
             type: "get",
             url: '@(Url.Action("ShowData"))?Title=' + title,//注意此文件必须与当前文件在同一目录下
@@ -26,33 +65,32 @@
                 frames.contentWindow.document.getElementById("frame_").contentWindow.setHtml(decodeURI(obj["Code"]));
                 $(window.parent.window.document.getElementById("title")).val(obj["Title"]);
                 $(window.parent.window.document.getElementById("author")).html("作者：" + obj["Author"]);
-                NodeAuthor = obj[0]["Author"];
+                NodeAuthor = obj["Author"];
             }
         });
     }
     //修改
     function Modify() {
 
-        if (window.parent.USER != NodeAuthor) { alert("不能修改非本账户代码数据"); return; }
-        var title = $(window.parent.window.document.getElementById("title")).val(), Code = encodeURI(frames.contentWindow.getHtml());
+        if ('@Html.Action("GetUserName","Shared")' != NodeAuthor) { alert("不能修改非本账户代码数据"); return; }
+        var title = $(window.parent.window.document.getElementById("title")).val(), Code = encodeURI(frames.contentWindow.document.getElementById("frame_").contentWindow.getHtml());
         if (title != NodeText) {
             alert("搜索界面下禁止修改标题！");
             return;
         }
-        var pd = { "id": "ModifyCode", "Title": title, "Code": Code, "Key": Nodeid, "OldTitle": NodeText }
+        var pd = { Title: title, Code: Code }
         $.ajax({
             type: "post",
-            url: '../Ashx/Handler.ashx',//注意此文件必须与当前文件在同一目录下
+            url: '@Url.Action("ModifyCode")',//注意此文件必须与当前文件在同一目录下
             data: pd,
             dataType: "json",
             error: function (textstatus) {
 
-                alert('修改代码出错');
+                alert('修改代码返回出错');
                 // $.dialog.alert('错误信息：' + errorThrown, function () { }, winObj);
             },
             success: function (result) {//result为任意定义的用于装载参数变量
                 var obj = eval(result);
-                Search();
                 if ((obj.result + "").substr(0, 2) == "出错") {
                     alert(obj.result);
                 } else {
@@ -70,10 +108,10 @@
     //搜索标题
     function Search() {
         var search = $('#search').val();
-
+        n_typeselect = $("#select_type option:selected").val();
         $.ajax({
             type: "get",
-            url: '@(Url.Action("SearchTitle"))?Title=' + search,//注意此文件必须与当前文件在同一目录下
+            url: '@(Url.Action("SearchTitle"))?Title=' + search + '&TypeSelect=' + n_typeselect,//注意此文件必须与当前文件在同一目录下
             dataType: "json",
             error: function (textstatus) {
 
@@ -88,22 +126,27 @@
                     var row = tb.insertRow(tb.rows.length);
 
                     $(row).attr("onclick", "ShowData(this," + JSON.stringify(datanav.objectids[i].objectid) + ")");
-
+                    $(row).attr("class","style")
                     var c1 = row.insertCell(0);
                     c1.innerHTML = datanav.result[i].title;
+                    $(row).css("cursor", "pointer")
+                    $(row).css("font-size", "100%")
+           
                 }
             }
         });
     }
+    
+
 </script>
 <style>
-    td {
+    .style {
         color: black;
     }
-
-        td:hover {
+        .style:hover {
             cursor: pointer;
             color: blue;
+            font-weight:600
         }
 </style>
 <table style="width:99%;height:100%;margin-left:1%;">
@@ -111,18 +154,18 @@
         <td style="width:100%;padding-top:1%">
             <table style="width:100%;height:100%">
                 <tr style="height:50%">
-                    <td style="width:100%">
-                        <input type="text" id="search" style="width:50%;font-size:85%;float:left;height:85%" />
-                        <button style="width:22%;float:left;margin-left:3%;font-size:85%" class="btn btn-default" onclick="Search()">搜索</button>
+                    <td style="width:100%;" >
+                        <select id="select_type" style="width:50%;float:left;height:85%"></select>
+                        <button style="width:22%;float:left;margin-left:3%;font-size:85%" class="btn btn-default" onclick="Shift()">切换</button>
                         <button style="width:22%;float:left;margin-left:3%;font-size:85%" class="btn btn-default2" onclick="Modify()">修改</button>
-
                     </td>
                 </tr>
                 <tr style="height:50%">
                     <td style="width:100%">
-                        <input type="text" style="width:30%;font-size:85%;float:left;height:85%" />
-                        <input type="text" style="width:30%;font-size:85%;float:left;height:85%" />
-                        <button style="width:25%;float:left;margin-left:3%;font-size:85%" class="btn btn-default" onclick="Shift()">切换</button>
+                        <input type="text" id="search" style="width:75%;font-size:85%;float:left;height:85%" />
+                        <button style="width:22%;float:left;margin-left:3%;font-size:85%" class="btn btn-default" onclick="Search()">搜索</button>
+
+
                     </td>
                 </tr>
             </table>
@@ -131,7 +174,7 @@
     </tr>
     <tr style="height:88%">
         <td valign="top" style="padding-top:2%">
-            <table id="search_list"></table>
+            <table id="search_list" style=""></table>
         </td>
     </tr>
 </table>
