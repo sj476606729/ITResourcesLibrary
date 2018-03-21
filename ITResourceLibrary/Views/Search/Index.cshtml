@@ -43,7 +43,7 @@
 
             }
         }
-    function ShowData(e, id) {
+    function ShowData(e, id,parent) {
         var title = $(e).html();
         $(ID).css("background-color","white")
         ID= e;
@@ -52,6 +52,7 @@
         title = title.substring(4, title.length - 5);
         NodeText = title;
         title = encodeURIComponent(title)
+        $(window.parent.window.document.getElementById("kind")).val(parent);
         $.ajax({
             type: "get",
             url: '@(Url.Action("ShowData"))?Title=' + title,//注意此文件必须与当前文件在同一目录下
@@ -66,6 +67,13 @@
                 $(window.parent.window.document.getElementById("title")).val(obj["Title"]);
                 $(window.parent.window.document.getElementById("author")).html("作者：" + obj["Author"]);
                 NodeAuthor = obj["Author"];
+                if (obj["Visible"] == "Invisible") {
+                    $(window.parent.window.document.getElementById("check")).prop("checked", false)
+                    $(window.parent.window.document.getElementById("check")).val('Invisible')
+                } else {
+                    $(window.parent.window.document.getElementById("check")).prop("checked", "true")
+                    $(window.parent.window.document.getElementById("check")).val('Visible')
+                }
             }
         });
     }
@@ -74,11 +82,12 @@
 
         if ('@Html.Action("GetUserName","Shared")' != NodeAuthor) { alert("不能修改非本账户代码数据"); return; }
         var title = $(window.parent.window.document.getElementById("title")).val(), Code = encodeURI(frames.contentWindow.document.getElementById("frame_").contentWindow.getHtml());
+        var visible = $(window.parent.window.document.getElementById("check")).val()
         if (title != NodeText) {
             alert("搜索界面下禁止修改标题！");
             return;
         }
-        var pd = { Title: title, Code: Code }
+        var pd = { Title: title, Code: Code, Visible: visible }
         $.ajax({
             type: "post",
             url: '@Url.Action("ModifyCode")',//注意此文件必须与当前文件在同一目录下
@@ -124,8 +133,7 @@
                 $('#search_list').html('');
                 for (var i = 0; i < datanav.result.length; i++) {
                     var row = tb.insertRow(tb.rows.length);
-
-                    $(row).attr("onclick", "ShowData(this," + JSON.stringify(datanav.objectids[i].objectid) + ")");
+                    $(row).attr("onclick", "ShowData(this," + JSON.stringify(datanav.objectids[i].objectid) + "," + JSON.stringify(datanav.parents[i].parent) + ")");
                     $(row).attr("class","style")
                     var c1 = row.insertCell(0);
                     c1.innerHTML = datanav.result[i].title;

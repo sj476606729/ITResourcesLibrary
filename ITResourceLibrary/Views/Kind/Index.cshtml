@@ -33,7 +33,7 @@
 <script>
         var Nodeid, NodeText, IsKind = false;
         var AllNode, node_move, typeid;
-        var frames, NodeAuthor;
+        var frames, NodeAuthor, ParentKind;
 
         $(function () {
             $('#body').css("height", document.documentElement.clientHeight);
@@ -49,7 +49,7 @@
                 success: function (result) {//result为任意定义的用于装载参数变量
                     AllNode = eval(result);
                     var data = TreeData(AllNode, "无");
-                    var ParentKind = JSON.stringify(data);
+                    ParentKind = JSON.stringify(data);
                     NodeOperate(data);
                     $('#load').remove();
                     var pd = { Kind:ParentKind }
@@ -177,9 +177,13 @@
                 var visible = $(window.parent.window.document.getElementById("check")).val()
                 for (var i = 0; i < AllNode.length; i++) {
                     if (AllNode[i]["Id"] == Nodeid) {
-                        AllNode[i]["text"] = title;
-                        var data = TreeData(AllNode, "无");
-                        NodeOperate(data); break;
+                        if (title != AllNode[i]["text"]) {
+                            var data = TreeData(AllNode, "无");
+                            NodeOperate(data);
+                        }
+                        
+                        break;
+                        
                     }
                 }
                 var pd = { Title: title, Code: Code, Key: Nodeid, OldTitle: NodeText, Visible: visible }

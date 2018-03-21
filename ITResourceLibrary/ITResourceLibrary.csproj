@@ -106,6 +106,9 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
+    <Reference Include="TinyMapper, Version=2.0.0.40, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TinyMapper.2.0.8\lib\net45\TinyMapper.dll</HintPath>
+    </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
       <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
@@ -149,6 +152,7 @@
     <Compile Include="Business\Interface\Interface.cs" />
     <Compile Include="Business\Models\CodeModel.cs" />
     <Compile Include="Business\Models\KindModel.cs" />
+    <Compile Include="Business\Models\OperationModel.cs" />
     <Compile Include="Business\Search.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\KindController.cs" />
@@ -161,9 +165,10 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Business\Operation.cs" />
+    <Compile Include="Helps\DataMapperHelp.cs" />
     <Compile Include="Helps\SessionHelp.cs" />
     <Compile Include="Models\AccountViewModel.cs" />
-    <Compile Include="Models\BmobDataModel.cs" />
+    <Compile Include="Business\Models\BmobDataModel.cs" />
     <Compile Include="Models\CodeModel.cs" />
     <Compile Include="Models\KindModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

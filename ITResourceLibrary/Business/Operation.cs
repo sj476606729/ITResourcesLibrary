@@ -11,20 +11,26 @@ using System.Data;
 using System.Linq;
 using System.Web;
 using ITResourceLibrary.Business;
+using Search;
+using System.Collections;
 
 namespace ITResourceLibrary.HandlerData
 {
     public class Operation:Function
     {
+        
         #region 搜索标题部分
         public static List<TreeModel> listTitles;
-        public static List<List<String>> listTitles2;
-        public static List<List<String>> listTitleids2;
+        public static List<List<String>> listTitles2_public=new List<List<string>>();
+        public static List<List<String>> listTitleids2_public = new List<List<string>>();
+        public static List<List<String>> listTitles2_private = new List<List<string>>();
+        public static List<List<String>> listTitleids2_private = new List<List<string>>();//定义静态目的是因为其他人登陆账户时时最全数据，可以覆盖原来数据(原来数据可能已操作过)
         public static List<string> titleids = new List<string>();
         public static List<string> title, id;
         public static List<List<string>> titles = new List<List<string>>();
         public static List<List<string>> ids = new List<List<string>>();
         #endregion
+
         public static DataTable Code_Data;
         public static DataTable Kind_Data;
     
@@ -53,7 +59,7 @@ namespace ITResourceLibrary.HandlerData
                     {
                         
                         if (row_["Title"].ToString() == row["Name"].ToString()) {
-                            if (row_["Visible"].ToString() == "Invisible" && (string)SessionHelp.Get("UserName") != "沙俊" && (string)SessionHelp.Get("UserName") != "沙杰")
+                            if (row_["Visible"].ToString() == "Invisible" && PublicPermission((string)SessionHelp.Get("UserName")))
                                 { pri = true; }
                             Color = "black"; Icon = "glyphicon glyphicon-pencil"; break;
                         }
@@ -75,6 +81,7 @@ namespace ITResourceLibrary.HandlerData
                     color = Color,
                     icon = Icon
                 });
+                listTitles = list;
             }
             string JsonData = JsonConvert.SerializeObject(list);
             return JsonData;
@@ -146,7 +153,7 @@ namespace ITResourceLibrary.HandlerData
                     }
                 }
                 Operation.Code_Data = table;
-                DataSynchronous("Code_tb");
+
                 return table;
             }
             else {
@@ -261,7 +268,6 @@ namespace ITResourceLibrary.HandlerData
                         data.SetField<string>("Code", Code);
                         data.SetField<string>("Visible", Visible);
                     }
-                    DataSynchronous("Code_tb");
                     if (Title != OldTitle)
                     {
                         BmobKindModel kindModel = new BmobKindModel("Kind_tb");
@@ -293,15 +299,26 @@ namespace ITResourceLibrary.HandlerData
                 return "出错," + e.Message;
             }
         }
-        public string ModifyCode(string Title,string Code)
+        public string ModifyCode(string Title,string Code,string Visible)
         {
             var linq = from r in Operation.Code_Data.AsEnumerable() where r.Field<string>("Title") == Title select r;
             string Objectid = linq.First().Field<string>("ObjectId");
             BmobCodeModel codeModel = new BmobCodeModel("Code_tb");
             codeModel.objectId = Objectid;
             codeModel.Code = Code;
+            codeModel.Visible = Visible;
             var future1 = Bmob.UpdateTaskAsync<BmobCodeModel>(codeModel);
-            if(future1.Result is IBmobWritable) { return "成功"; }
+            if(future1.Result is IBmobWritable) {
+                linq = from r in Code_Data.AsEnumerable() where r.Field<string>("Title") == Title select r;
+                foreach (var data in linq)
+                {
+                    data.SetField<string>("Title", Title);
+                    data.SetField<string>("Code", Code);
+                    data.SetField<string>("Visible", Visible);
+                }
+
+                return "成功";
+            }
             return "修改失败";
         }
         /// <summary>
@@ -495,7 +512,11 @@ namespace ITResourceLibrary.HandlerData
         {
             //JObject,JArray
             titleids.Clear();
-            var mJObj = JArray.Parse(data);
+            titles.Clear();
+            ids.Clear();
+            listTitles2_public.Clear(); listTitleids2_public.Clear(); listTitles2_private.Clear(); listTitleids2_private.Clear();
+
+             var mJObj = JArray.Parse(data);
             IList<JToken> delList = new List<JToken>(); //存储需要删除的项
 
             foreach (var ss in mJObj)  //查找某个字段与值
@@ -503,14 +524,27 @@ namespace ITResourceLibrary.HandlerData
                 JObject _o = (JObject)ss;
                 title = new List<string>();
                 id = new List<string>();
+                if(_o["text"].ToString()== "数据库操作超级工具类")
+                {
+                    string a="";
+                }
                 titleids.Add(_o["text"].ToString());
                 xunhuan((JArray)_o["nodes"]);
                 titles.Add(title);
                 ids.Add(id);
 
             }
-            listTitles2 = titles;
-            listTitleids2 = ids;
+            if (PublicPermission((string)SessionHelp.Get("UserName")))
+             {
+                listTitles2_public.AddRange(titles);
+                listTitleids2_public.AddRange(ids);
+            }
+            else
+            {
+                listTitles2_private.AddRange(titles);
+                listTitleids2_private.AddRange(ids);
+            }
+            
             return JToken.FromObject(titleids).ToString();
 
 
@@ -538,16 +572,8 @@ namespace ITResourceLibrary.HandlerData
             }
 
         }
-        /// <summary>
-        /// 数据同步到服务器
-        /// </summary>
-        /// <param name="select"></param>
-        private void DataSynchronous(string select)
-        {
-            HttpContext.Current.Application.Lock();
-            if (select == "Kind_tb") { HttpContext.Current.Application["Kind_tb"] = Operation.Kind_Data; } else { HttpContext.Current.Application["Code_tb"] = Operation.Code_Data; }
-            HttpContext.Current.Application.UnLock();
-        }
+
+        
     }
  
  

@@ -146,4 +146,59 @@ namespace Bmob_space
             output.Put("Name", this.Name);
         }
     }
+    /// <summary>
+    /// 用户操作记录模型
+    /// </summary>
+    public class BmobOperationModel : BmobTable
+    {
+        private String fTable;
+        public string User { get; set; }
+        public string Operate { get; set; }
+        public string Title { get; set; }
+        public string Kind { get; set; }
+
+        //构造函数
+        public BmobOperationModel() { }
+
+        //构造函数
+        public BmobOperationModel(String tableName)
+        {
+            this.fTable = tableName;
+        }
+
+        public override string table
+        {
+            get
+            {
+                if (fTable != null)
+                {
+                    return fTable;
+                }
+                return base.table;
+            }
+        }
+
+        //读字段信息
+        public override void readFields(BmobInput input)
+        {
+            base.readFields(input);
+
+            this.User = input.getString("User");
+            this.Operate = input.getString("Operate");
+            this.Title = input.getString("Title");
+            this.Kind = input.getString("Kind");
+
+        }
+
+        //写字段信息
+        public override void write(BmobOutput output, bool all)
+        {
+            base.write(output, all);
+
+            output.Put("User", this.User);
+            output.Put("Operate", this.Operate);
+            output.Put("Title", this.Title);
+            output.Put("Kind", this.Kind);
+        }
+    }
 }

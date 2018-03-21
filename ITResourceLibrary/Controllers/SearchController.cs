@@ -12,6 +12,8 @@ namespace ITResourceLibrary.Controllers
     public class SearchController : Currency
     {
         Operation operate = new Operation();
+        
+        
         // GET: Search
         public ActionResult Index()
         {
@@ -30,9 +32,9 @@ namespace ITResourceLibrary.Controllers
             return data;
         }
         [HttpPost]
-        public string ModifyCode(string Title, string Code)
+        public string ModifyCode(string Title, string Code,string Visible)
         {
-            return ToJson(operate.ModifyCode(Title, Code));
+            return ToJson(operate.ModifyCode(Title, Code,Visible));
         }
     }
 }

@@ -52,13 +52,13 @@ namespace ITResourceLibrary.Business
     public class Function
     {
         /// <summary>
-        /// 是否私人权限
+        /// 是否一般账户
         /// </summary>
         /// <param name=""></param>
         /// <returns></returns>
         public bool PublicPermission(string UserName)
         {
-            if (UserName == "沙俊" && UserName == "沙杰") return true;
+            if (UserName != "沙俊" && UserName != "沙杰") return true;
             return false;
         }
     }

@@ -7,15 +7,16 @@ using Bmob_space;
 using cn.bmob.io;
 using System.Data;
 using ITResourceLibrary.HandlerData;
+using ITResourceLibrary.Helps;
+using ITResourceLibrary.Business.Models;
+using ITResourceLibrary.Business;
 
 namespace Search
 {
-    public class SearchOperate
+    public class SearchOperate: Function
     {
-        BmobWindows Bmob = new BmobWindows();
-        Bmob_Initial initial = Bmob_Initial.Initial();
-        //搜索排序
-        public string SearchTitle(string Title,string select)
+        //搜索
+        public string SearchTitle(string Title, string select)
         {
             Util util = Util.Instance;
             ArrayList list = new ArrayList();
@@ -23,12 +24,26 @@ namespace Search
             ArrayList result = new ArrayList();
             int n_select = int.Parse(select);
             if (Operation.Code_Data == null) { return "还未初始化，请等待"; }
-            if (Operation.listTitles2.Count == Operation.listTitleids2.Count)
-            {
-                list.AddRange(Operation.listTitles2[n_select]);
 
-                list2.AddRange(Operation.listTitleids2[n_select]);
+            if (PublicPermission((string)SessionHelp.Get("UserName")))//判断是否为私有，分两组数据类分别存共有和私有
+            {
+                if (Operation.listTitles2_public.Count == Operation.listTitleids2_public.Count)
+                {
+                    list.AddRange(Operation.listTitles2_public[n_select]);
+
+                    list2.AddRange(Operation.listTitleids2_public[n_select]);
+                }
             }
+            else
+            {
+                if (Operation.listTitles2_private.Count == Operation.listTitleids2_private.Count)
+                {
+                    list.AddRange(Operation.listTitles2_private[n_select]);
+
+                    list2.AddRange(Operation.listTitleids2_private[n_select]);
+                }
+            }
+                
             CallBack callback = new CallBack();
             util.paixu(list, list2, Title, callback);
             return callback.result;
@@ -45,21 +60,59 @@ namespace Search
 
             if (listtitle.Count > 0)
             {
+                ArrayList listTitles = new ArrayList();
+                List<TreeModel> lists =Operation.listTitles;
+                string id, parentid, title2 = "";
+                //对搜索出来的结果添加组名
+                for (int i = 0; i < listtitle.Count; i++)
+                {
+                    for (int j = 0; j < lists.Count; j++)
+                    {
+                        if (listtitle[i].ToString() == lists[j].text)
+                        {
+                            id = lists[j].Id;
+                            parentid = lists[j].ParentId;
+                            for (int k = 0; k < lists.Count; k++)
+                            {
+
+                                if (lists[k].Id == parentid)
+                                {
+                                    title2 = "【" + lists[k].text + "】>" + title2;
+                                    if (lists[k].ParentId == "无") break;
+                                    parentid = lists[k].ParentId;
+                                    k = -1;
+                                }
+
+                            }
+                            listTitles.Add(title2);
+                            title2 = "";
+
+                        }
+
+                    }
+
+
+                }
                 string json = "[";
                 string json2 = "[";
-                foreach (object data in listtitle)
+                string json3 = "[";
+                foreach (object title in listtitle)
                 {
-                    json += "{\"title\":\"" + data.ToString() + "\"},";
+                    json += "{\"title\":\"" + title.ToString() + "\"},";
                 }
-                json = json.Substring(0, json.Length - 1) + "]";
                 foreach (object data in listtitleid)
                 {
                     json2 += "{\"objectid\":\"" + data.ToString() + "\"},";
                 }
+                foreach (string title in listTitles)
+                {
+                    json3 += "{\"parent\":\"" + title + "\"},";
+                }
+                json = json.Substring(0, json.Length - 1) + "]";
                 json2 = json2.Substring(0, json2.Length - 1) + "]";
+                json3 = json3.Substring(0, json3.Length - 1) + "]";
+                result = "{\"result\":" + json + ",\"objectids\":" + json2 + ",\"parents\":" + json3 + "}";
 
-                result = "{\"result\":" + json + ",\"objectids\":" + json2 + "}";
-             
             }
             else result = "未搜到信息";
         }

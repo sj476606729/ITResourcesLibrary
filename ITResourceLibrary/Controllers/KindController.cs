@@ -10,13 +10,27 @@ namespace ITResourceLibrary.Controllers
 {
     public class KindController : Currency
     {
-        Operation operation = new Operation();
+        Operation operation=new Operation();
+
+
+        
+       
         // GET: Kind
         public ActionResult Index()
         {
             return View();
         }
         //获得所有分类
+        //中间类
+        //中间类。build operation  search
+        //中间类
+        //Operation operation2:listlist
+        //Search search
+        // operation buildoperation()
+        //operation2=new Operation()
+        //return operation2
+        //search.setlist(Interface operation2){
+        //list=Interface.list
         
         public string GetKind(string id)
         {
