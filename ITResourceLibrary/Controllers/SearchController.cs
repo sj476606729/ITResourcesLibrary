@@ -22,7 +22,7 @@ namespace ITResourceLibrary.Controllers
         //搜索标题
         public string SearchTitle(string Title,string TypeSelect)
         {
-            string data = new SearchOperate().SearchTitle(Title,TypeSelect);
+            string data = new SearchOperate().SearchTitle(Title,int.Parse(TypeSelect));
             return data;
         }
         //显示内容

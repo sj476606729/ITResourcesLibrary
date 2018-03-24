@@ -16,31 +16,50 @@ namespace Search
     public class SearchOperate: Function
     {
         //搜索
-        public string SearchTitle(string Title, string select)
+        public string SearchTitle(string Title, int select)
         {
             Util util = Util.Instance;
-            ArrayList list = new ArrayList();
-            ArrayList list2 = new ArrayList();
-            ArrayList result = new ArrayList();
-            int n_select = int.Parse(select);
+            ArrayList list = new ArrayList();//装载标题
+            ArrayList list2 = new ArrayList();//装载标题id
+            ArrayList result = new ArrayList();//搜索完返回结果
+
             if (Operation.Code_Data == null) { return "还未初始化，请等待"; }
 
             if (PublicPermission((string)SessionHelp.Get("UserName")))//判断是否为私有，分两组数据类分别存共有和私有
             {
                 if (Operation.listTitles2_public.Count == Operation.listTitleids2_public.Count)
                 {
-                    list.AddRange(Operation.listTitles2_public[n_select]);
-
-                    list2.AddRange(Operation.listTitleids2_public[n_select]);
+                    if (select == 0)//判断是否为所有
+                    {
+                        foreach(var i in Operation.listTitles2_public)
+                        {
+                            list.AddRange(i);list2.AddRange(i);
+                        }
+                    }
+                    else
+                    {
+                        list.AddRange(Operation.listTitles2_public[select]);
+                        list2.AddRange(Operation.listTitleids2_public[select]);
+                    }
+                    
                 }
             }
             else
             {
                 if (Operation.listTitles2_private.Count == Operation.listTitleids2_private.Count)
                 {
-                    list.AddRange(Operation.listTitles2_private[n_select]);
-
-                    list2.AddRange(Operation.listTitleids2_private[n_select]);
+                    if (select == 0)//判断是否为所有
+                    {
+                        foreach (var i in Operation.listTitles2_private)
+                        {
+                            list.AddRange(i);list2.AddRange(i);
+                        }
+                    }
+                    else
+                    {
+                        list.AddRange(Operation.listTitles2_private[select]);
+                        list2.AddRange(Operation.listTitleids2_private[select]);
+                    }
                 }
             }
                 

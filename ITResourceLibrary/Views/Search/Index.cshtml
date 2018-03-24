@@ -22,8 +22,9 @@
             n_type = Kind_f.contentWindow.typeid.length;
             if (document.getElementById("select_type").options.length != n_type) {
                 document.getElementById("select_type").options.length = 0
-                for (var i = 0; i < n_type; i++) {
-                    addOneItemToSelect("select_type", Kind_f.contentWindow.typeid[i], i.toString());
+                addOneItemToSelect("select_type","所有", "0");
+                for (var i = 1; i <= n_type; i++) {
+                    addOneItemToSelect("select_type", Kind_f.contentWindow.typeid[i-1], i.toString());
                 }
             }
 

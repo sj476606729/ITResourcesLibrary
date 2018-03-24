@@ -153,6 +153,7 @@
     <Compile Include="Business\Models\CodeModel.cs" />
     <Compile Include="Business\Models\KindModel.cs" />
     <Compile Include="Business\Models\OperationModel.cs" />
+    <Compile Include="Business\OperationLog.cs" />
     <Compile Include="Business\Search.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\KindController.cs" />

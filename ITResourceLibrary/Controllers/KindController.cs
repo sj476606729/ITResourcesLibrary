@@ -95,7 +95,7 @@ namespace ITResourceLibrary.Controllers
         {
             return ToJson(operation.DeleteCode(Key,Title));
         }
-
+        //把前台树状结构数据发送到服务器
         public string GetSelect(string Kind)
         {
             string data= operation.Totitles(Kind);
