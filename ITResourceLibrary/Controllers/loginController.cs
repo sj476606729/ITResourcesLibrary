@@ -35,7 +35,10 @@ namespace ITResourceLibrary.Controllers
             { if (account.Password == "XICHAOQUN") { SessionHelp.Set("UserName", "奚超群"); return RedirectToAction("Index", "Home"); } }
             else if (account.User == "123321")
             { if (account.Password == "123321") { SessionHelp.Set("UserName", "通用账户");
-                    return RedirectToAction("Index", "Home"); } }
+            else if (account.User == "wangyongming")
+                    { if (account.Password == "WANGYONGMING")
+                        { SessionHelp.Set("UserName", "王永明");
+                            return RedirectToAction("Index", "Home"); } }
             ViewBag.error = "账号密码有误";
             return View();
         }
