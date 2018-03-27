@@ -18,7 +18,6 @@
  * ========================================================= */
 
 ;(function ($, window, document, undefined) {
-
 	/*global jQuery, console*/
 
 	'use strict';
@@ -28,7 +27,6 @@
 	var _default = {};
 
 	_default.settings = {
-
 		injectStyle: true,
 
 		levels: 2,
@@ -84,7 +82,6 @@
 	};
 
 	var Tree = function (element, options) {
-
 		this.$element = $(element);
 		this.elementId = element.id;
 		this.styleId = this.elementId + '-style';
@@ -92,7 +89,6 @@
 		this.init(options);
 
 		return {
-
 			// Options (public access)
 			options: this.options,
 
@@ -147,7 +143,6 @@
 	};
 
 	Tree.prototype.init = function (options) {
-
 		this.tree = [];
 		this.nodes = [];
 
@@ -173,7 +168,6 @@
 	};
 
 	Tree.prototype.destroy = function () {
-
 		if (!this.initialized) return;
 
 		this.$wrapper.remove();
@@ -187,7 +181,6 @@
 	};
 
 	Tree.prototype.unsubscribeEvents = function () {
-
 		this.$element.off('click');
 		this.$element.off('nodeChecked');
 		this.$element.off('nodeCollapsed');
@@ -202,7 +195,6 @@
 	};
 
 	Tree.prototype.subscribeEvents = function () {
-
 		this.unsubscribeEvents();
 
 		this.$element.on('click', $.proxy(this.clickHandler, this));
@@ -255,14 +247,12 @@
 		index nodes in a flattened structure
 	*/
 	Tree.prototype.setInitialStates = function (node, level) {
-
 		if (!node.nodes) return;
 		level += 1;
 
 		var parent = node;
 		var _this = this;
 		$.each(node.nodes, function checkStates(index, node) {
-
 			// nodeId : unique, incremental identifier
 			node.nodeId = _this.nodes.length;
 
@@ -315,26 +305,22 @@
 	};
 
 	Tree.prototype.clickHandler = function (event) {
-
 		if (!this.options.enableLinks) event.preventDefault();
 
 		var target = $(event.target);
 		var node = this.findNode(target);
 		if (!node || node.state.disabled) return;
-		
+
 		var classList = target.attr('class') ? target.attr('class').split(' ') : [];
 		if ((classList.indexOf('expand-icon') !== -1)) {
-
 			this.toggleExpandedState(node, _default.options);
 			this.render();
 		}
 		else if ((classList.indexOf('check-icon') !== -1)) {
-			
 			this.toggleCheckedState(node, _default.options);
 			this.render();
 		}
 		else {
-			
 			if (node.selectable) {
 				this.toggleSelectedState(node, _default.options);
 			} else {
@@ -348,7 +334,6 @@
 	// Looks up the DOM for the closest parent list item to retrieve the
 	// data attribute nodeid, which is used to lookup the node in the flattened structure.
 	Tree.prototype.findNode = function (target) {
-
 		var nodeId = target.closest('li.list-group-item').attr('data-nodeid');
 		var node = this.nodes[nodeId];
 
@@ -364,11 +349,9 @@
 	};
 
 	Tree.prototype.setExpandedState = function (node, state, options) {
-
 		if (state === node.state.expanded) return;
 
 		if (state && node.nodes) {
-
 			// Expand a node
 			node.state.expanded = true;
 			if (!options.silent) {
@@ -376,7 +359,6 @@
 			}
 		}
 		else if (!state) {
-
 			// Collapse a node
 			node.state.expanded = false;
 			if (!options.silent) {
@@ -398,11 +380,9 @@
 	};
 
 	Tree.prototype.setSelectedState = function (node, state, options) {
-
 		if (state === node.state.selected) return;
 
 		if (state) {
-
 			// If multiSelect false, unselect previously selected
 			if (!this.options.multiSelect) {
 				$.each(this.findNodes('true', 'g', 'state.selected'), $.proxy(function (index, node) {
@@ -417,7 +397,6 @@
 			}
 		}
 		else {
-
 			// Unselect node
 			node.state.selected = false;
 			if (!options.silent) {
@@ -432,11 +411,9 @@
 	};
 
 	Tree.prototype.setCheckedState = function (node, state, options) {
-
 		if (state === node.state.checked) return;
 
 		if (state) {
-
 			// Check node
 			node.state.checked = true;
 
@@ -445,7 +422,6 @@
 			}
 		}
 		else {
-
 			// Uncheck node
 			node.state.checked = false;
 			if (!options.silent) {
@@ -455,11 +431,9 @@
 	};
 
 	Tree.prototype.setDisabledState = function (node, state, options) {
-
 		if (state === node.state.disabled) return;
 
 		if (state) {
-
 			// Disable node
 			node.state.disabled = true;
 
@@ -473,7 +447,6 @@
 			}
 		}
 		else {
-
 			// Enabled node
 			node.state.disabled = false;
 			if (!options.silent) {
@@ -483,9 +456,7 @@
 	};
 
 	Tree.prototype.render = function () {
-
 		if (!this.initialized) {
-
 			// Setup first time only components
 			this.$element.addClass(pluginName);
 			this.$wrapper = $(this.template.list);
@@ -504,19 +475,17 @@
 	// Starting from the root node, and recursing down the
 	// structure we build the tree one node at a time
 	Tree.prototype.buildTree = function (nodes, level) {
-
 		if (!nodes) return;
 		level += 1;
 
 		var _this = this;
 		$.each(nodes, function addNodes(id, node) {
-
 			var treeItem = $(_this.template.item)
 				.addClass('node-' + _this.elementId)
 				.addClass(node.state.checked ? 'node-checked' : '')
 				.addClass(node.state.disabled ? 'node-disabled': '')
 				.addClass(node.state.selected ? 'node-selected' : '')
-				.addClass(node.searchResult ? 'search-result' : '') 
+				.addClass(node.searchResult ? 'search-result' : '')
 				.attr('data-nodeid', node.nodeId)
 				.attr('style', _this.buildStyleOverride(node));
 
@@ -545,16 +514,14 @@
 					.addClass(classList.join(' '))
 				);
 
-
 			// Add node icon
 			if (_this.options.showIcon) {
-				
 				var classList = ['node-icon'];
 
 				classList.push(node.icon || _this.options.nodeIcon);
 				if (node.state.selected) {
 					classList.pop();
-					classList.push(node.selectedIcon || _this.options.selectedIcon || 
+					classList.push(node.selectedIcon || _this.options.selectedIcon ||
 									node.icon || _this.options.nodeIcon);
 				}
 
@@ -566,10 +533,9 @@
 
 			// Add check / unchecked icon
 			if (_this.options.showCheckbox) {
-
 				var classList = ['check-icon'];
 				if (node.state.checked) {
-					classList.push(_this.options.checkedIcon); 
+					classList.push(_this.options.checkedIcon);
 				}
 				else {
 					classList.push(_this.options.uncheckedIcon);
@@ -620,7 +586,6 @@
 	// 1. selectedNode
 	// 2. node|data assigned color overrides
 	Tree.prototype.buildStyleOverride = function (node) {
-
 		if (node.state.disabled) return '';
 
 		var color = node.color;
@@ -650,7 +615,6 @@
 
 	// Add inline style into head
 	Tree.prototype.injectStyle = function () {
-
 		if (this.options.injectStyle && !document.getElementById(this.styleId)) {
 			$('<style type="text/css" id="' + this.styleId + '"> ' + this.buildStyle() + ' </style>').appendTo('head');
 		}
@@ -658,7 +622,6 @@
 
 	// Construct trees style based on user options
 	Tree.prototype.buildStyle = function () {
-
 		var style = '.node-' + this.elementId + '{';
 
 		if (this.options.color) {
@@ -696,7 +659,6 @@
 	};
 
 	Tree.prototype.css = '.treeview .list-group-item{cursor:pointer}.treeview span.indent{margin-left:10px;margin-right:10px}.treeview span.icon{width:12px;margin-right:5px}.treeview .node-disabled{color:silver;cursor:not-allowed}'
-
 
 	/**
 		Returns a single node object that matches the given node id.
@@ -795,7 +757,6 @@
 		return this.findNodes('false', 'g', 'state.disabled');
 	};
 
-
 	/**
 		Set a node state to selected
 		@param {Object|Number} identifiers - A valid node, node id or array of node identifiers
@@ -834,7 +795,6 @@
 
 		this.render();
 	};
-
 
 	/**
 		Collapse all tree nodes
@@ -935,10 +895,9 @@
 		this.forEachIdentifier(identifiers, options, $.proxy(function (node, options) {
 			this.toggleExpandedState(node, options);
 		}, this));
-		
+
 		this.render();
 	};
-
 
 	/**
 		Check all tree nodes
@@ -1005,7 +964,6 @@
 		this.render();
 	};
 
-
 	/**
 		Disable all tree nodes
 		@param {optional Object} options
@@ -1071,12 +1029,10 @@
 		this.render();
 	};
 
-
 	/**
 		Common code for processing multiple identifiers
 	*/
 	Tree.prototype.forEachIdentifier = function (identifiers, options, callback) {
-
 		options = $.extend({}, _default.options, options);
 
 		if (!(identifiers instanceof Array)) {
@@ -1085,7 +1041,7 @@
 
 		$.each(identifiers, $.proxy(function (index, identifier) {
 			callback(this.identifyNode(identifier), options);
-		}, this));	
+		}, this));
 	};
 
 	/*
@@ -1110,7 +1066,6 @@
 
 		var results = [];
 		if (pattern && pattern.length > 0) {
-
 			if (options.exactMatch) {
 				pattern = '^' + pattern + '$';
 			}
@@ -1148,7 +1103,6 @@
 		Clears previous search results
 	*/
 	Tree.prototype.clearSearch = function (options) {
-
 		options = $.extend({}, { render: true }, options);
 
 		var results = $.each(this.findNodes('true', 'g', 'searchResult'), function (index, node) {
@@ -1156,9 +1110,9 @@
 		});
 
 		if (options.render) {
-			this.render();	
+			this.render();
 		}
-		
+
 		this.$element.trigger('searchCleared', $.extend(true, {}, results));
 	};
 
@@ -1170,7 +1124,6 @@
 		@return {Array} nodes - Nodes that match your criteria
 	*/
 	Tree.prototype.findNodes = function (pattern, modifier, attribute) {
-
 		modifier = modifier || 'g';
 		attribute = attribute || 'text';
 
@@ -1216,7 +1169,6 @@
 	// Prevent against multiple instantiations,
 	// handle updates and method calls
 	$.fn[pluginName] = function (options, args) {
-
 		var result;
 
 		this.each(function () {
@@ -1245,5 +1197,4 @@
 
 		return result || this;
 	};
-
 })(jQuery, window, document);

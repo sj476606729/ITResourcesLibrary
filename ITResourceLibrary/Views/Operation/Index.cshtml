@@ -1,6 +1,45 @@
 ﻿@{
     Layout = null;
 }
+@using ITResourceLibrary.Business.Models
+@{ 
+    var n = 0;
+}
+<style>
+    ul {
+        padding-left: 20px;
+    }
+
+        ul #item {
+            padding-left: 0;
+        }
+</style>
+<div>
+    <ul id="log">
+
+        @foreach (OperationModel item in (ViewBag.logs as IEnumerable<OperationModel>))
+        {
+
+            <li style="list-style-type:decimal;margin:10px 0px 10px 0px">
+                <ul id="item">
+                    @if (n==0)
+                    {
+                        <li style="color:blue;font-size:15px ;list-style-type:none;margin 0px">【@item.User】@item.Operate</li>
+                        <li style="color:blue;font-size:15px ;list-style-type:none;margin 0px">【@item.Title】</li>
+                        <li style="color:blue;font-size:15px ;list-style-type:none;margin 0px"> =>【@item.Kind】</li>
+                    }
+                    else
+                    {
+                        <li style="font-size:15px ;list-style-type:none;margin 0px">【@item.User】@item.Operate</li>
+                        <li style="font-size:15px ;list-style-type:none;margin 0px">【@item.Title】</li>
+                        <li style="font-size:15px ;list-style-type:none;margin 0px"> =>【@item.Kind】</li>
+                    }
 
 
-<div>操作消息显示    等待开放……</div>
+                    
+                </ul>
+            </li>
+            n+=1;
+        }
+    </ul>
+</div>

@@ -1,14 +1,10 @@
-﻿using System;
+﻿using Nelibur.ObjectMapper;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Nelibur.ObjectMapper;
 
 namespace ITResourceLibrary.Helps
 {
     public class DataMapperHelper
     {
-
         public static T Map<T>(object source)
         {
             return TinyMapper.Map<T>(source);

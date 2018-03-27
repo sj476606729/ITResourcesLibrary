@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace ITResourceLibrary.Business.Models
+﻿namespace ITResourceLibrary.Business.Models
 {
     public class CodeModel
     {
@@ -12,5 +7,6 @@ namespace ITResourceLibrary.Business.Models
         public string Code { get; set; }
         public string Author { get; set; }
         public string Visible { get; set; }
+        public string ParentTitle { get; set; }
     }
 }

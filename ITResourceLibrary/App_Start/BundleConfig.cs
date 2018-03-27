@@ -1,5 +1,4 @@
-﻿using System.Web;
-using System.Web.Optimization;
+﻿using System.Web.Optimization;
 
 namespace ITResourceLibrary
 {
@@ -23,7 +22,6 @@ namespace ITResourceLibrary
                       "~/Scripts/bootstrap.js",
                       "~/Scripts/respond.js", "~/Scripts/bootstrap-switch.min.js"
 
-                      
                       ));
             bundles.Add(new StyleBundle("~/Content/bootstrap").Include(
                 "~/Content/bootstrap-switch/bootstrap3/bootstrap-switch.min.css",

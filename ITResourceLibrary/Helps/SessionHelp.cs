@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Web;
 
 namespace ITResourceLibrary.Helps
@@ -15,6 +12,7 @@ namespace ITResourceLibrary.Helps
                 HttpContext.Current.Session[key] = value;
             }
         }
+
         //获取session并转换成类型T
         public static T Get<T>(string key)
         {
@@ -35,6 +33,7 @@ namespace ITResourceLibrary.Helps
         {
             HttpContext.Current.Session.Remove(key);
         }
+
         //获取session并转换成object
         public static object Get(string key)
         {

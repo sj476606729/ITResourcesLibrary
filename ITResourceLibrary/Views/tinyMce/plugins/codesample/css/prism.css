@@ -74,7 +74,6 @@ pre[class*="language-"] {
 /*xml的特殊符号*/
 .token.punctuation {
   color: #a67f59;
- 
 }
 /*透明度*/
 .namespace {
@@ -137,4 +136,3 @@ pre[class*="language-"] {
 .token.entity {
   cursor: help;
 }
-

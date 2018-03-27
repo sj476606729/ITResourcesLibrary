@@ -26,15 +26,13 @@
                 <td style="width:15%"><label id="author" style="color:crimson;font-size:100%;text-align:center"></label></td>
                 <td style="width:5%;color:darkslategray" id="check_div" ><div> <input type="checkbox" name="status" onchange="check_change(this)"  checked  id="check" /></div></td>
             </tr>
-
         </table>
-       
     </div>
-    
+
     <iframe id="Kind_f" src="@Url.Action("Index","Kind")" style="width:19%;float:left;height:90%;border:none;margin-top:0.5%;margin-left:0.3%"></iframe>
     <iframe id="Search_f" src="@Url.Action("Index","Search")" style="width:0;float:left;height:90%;border:none;margin-top:0.5%;"></iframe>
-    <iframe id="frame" src="@Url.Action("Index","tinyMce")" style="width:70%;float:left;margin-left:0.5%;height:93%;border:none;overflow:hidden" onclick="Bigger()"></iframe>
-    <iframe id="Operation"src="@Url.Action("Index","Operation")" style="width:10%;height:90%;border:none; float:left"></iframe>
+    <iframe id="frame" src="@Url.Action("Index","tinyMce")" style="width:65%;float:left;margin-left:0.5%;height:93%;border:none;overflow:hidden" onclick="Bigger()"></iframe>
+    <iframe id="Operation"src="@Url.Action("Index","Operation")" style="width:15%;height:90%;border:none; float:left"></iframe>
     <div class="container body-content" style="width:0;height:0;float:left">
         @RenderBody()
         <hr />
@@ -77,8 +75,6 @@
         Exit = function () {
             window.location.href='@Url.Action("Index","login")'
         }
-
-
     </script>
 </body>
 </html>

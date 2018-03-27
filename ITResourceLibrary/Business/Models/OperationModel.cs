@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace ITResourceLibrary.Business.Models
+﻿namespace ITResourceLibrary.Business.Models
 {
     public class OperationModel
     {
@@ -11,5 +6,6 @@ namespace ITResourceLibrary.Business.Models
         public string Operate { get; set; }
         public string Title { get; set; }
         public string Kind { get; set; }
+        public string createdAt { get; set; }
     }
 }

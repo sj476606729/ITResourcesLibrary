@@ -14,6 +14,7 @@ namespace Bmob_space
     {
         private static Bmob_Initial initial = null;
         private BmobWindows bmob;
+
         public static Bmob_Initial Initial()
         {
             if (initial == null)
@@ -22,29 +23,30 @@ namespace Bmob_space
             }
             return initial;
         }
+
         private Bmob_Initial() : base()
         {
-
             bmob = new BmobWindows();
             //初始化，这个ApplicationId/RestKey需要更改为你自己的ApplicationId/RestKey（ http://www.bmob.cn 上注册登录之后，创建应用可获取到ApplicationId/RestKey）
             Bmob.initialize("bcab92606ca5634cc0a65811ee7940f7", "f23363d3111faa6d14ba23d510a521f7");
         }
-        private BmobWindows Bmob
+
+        public BmobWindows Bmob
         {
             get { return bmob; }
         }
     }
+
     public class Bmob_Operate
     {
-
         public Bmob_Operate()
         {
             //
             // TODO: 在此处添加构造函数逻辑
             //
         }
-
     }
+
     /// <summary>
     /// 比目代码数据模型
     /// </summary>
@@ -99,13 +101,13 @@ namespace Bmob_space
             output.Put("Visible", this.Visible);
         }
     }
+
     //分类数据模型
     public class BmobKindModel : BmobTable
     {
         private String fTable;
         public string ParentId { get; set; }
         public string Name { get; set; }
-
 
         //构造函数
         public BmobKindModel() { }
@@ -146,6 +148,7 @@ namespace Bmob_space
             output.Put("Name", this.Name);
         }
     }
+
     /// <summary>
     /// 用户操作记录模型
     /// </summary>
@@ -187,7 +190,6 @@ namespace Bmob_space
             this.Operate = input.getString("Operate");
             this.Title = input.getString("Title");
             this.Kind = input.getString("Kind");
-
         }
 
         //写字段信息

@@ -49,18 +49,14 @@ tinymce.init({
             tinymce.activeEditor.execCommand('mceFullScreen');
  });
     </script>
-
-
 </head>
 
-
 <body>
-
 
 <textarea id="editor">
 <pre class="language-csharp"><code> private void Form1_Load(object sender, EventArgs e)
         {
-          
+
             listView1.Hide();
             isListViewHide = true;
             Form_Login.NewInstance.Show();
@@ -69,10 +65,9 @@ tinymce.init({
             thread.Start();
             Cef.Initialize(new CefSettings());
             webedit = new ChromiumWebBrowser(System.Environment.CurrentDirectory   "\\tinyMce\\模板.html");
-      
+
             this.panel1.Controls.Add(webedit);
             webedit.Dock = DockStyle.Fill;
-          
 
             treeView1.HideSelection = false;
             //自已绘制
@@ -82,7 +77,7 @@ tinymce.init({
             //setRightMenu();
             button2.Hide();
             right = form1.Width - comboBox1.Left;
-           
+
         }</code></pre></textarea>
 
 <script>
@@ -99,9 +94,8 @@ tinymce.init({
 	// 设置编辑模式
         var setMode = function (mode) {
             tinymce.activeEditor.setMode(mode);
-           
+
         };
 </script>
-
 </body>
 </html> 

@@ -1,41 +1,40 @@
 ﻿using Bmob_space;
 using cn.bmob.api;
 using cn.bmob.io;
-using ITResourceLibrary.Helps;
+using ITResourceLibrary.Business;
 using ITResourceLibrary.Business.Models;
+using ITResourceLibrary.Helps;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Web;
-using ITResourceLibrary.Business;
-using Search;
-using System.Collections;
 
 namespace ITResourceLibrary.HandlerData
 {
-    public class Operation:Function
+    public class Operation : Function
     {
-        
         #region 搜索标题部分
+
         public static List<TreeModel> listTitles;
-        public static List<List<String>> listTitles2_public=new List<List<string>>();
+        public static List<List<String>> listTitles2_public = new List<List<string>>();
         public static List<List<String>> listTitleids2_public = new List<List<string>>();
         public static List<List<String>> listTitles2_private = new List<List<string>>();
         public static List<List<String>> listTitleids2_private = new List<List<string>>();//定义静态目的是因为其他人登陆账户时时最全数据，可以覆盖原来数据(原来数据可能已操作过)
-        public static List<string> titleids = new List<string>();
+        public static List<string> titleids = new List<string>();           //最终parent标题
         public static List<string> title, id;
-        public static List<List<string>> titles = new List<List<string>>();
-        public static List<List<string>> ids = new List<List<string>>();
-        #endregion
+        public static List<List<string>> titles = new List<List<string>>();//所有的文章标题与ids对应
+        public static List<List<string>> ids = new List<List<string>>();    //所有文章的id与titles对应
+
+        #endregion 搜索标题部分
 
         public static DataTable Code_Data;
         public static DataTable Kind_Data;
-    
-        BmobWindows Bmob = new BmobWindows();
-        Bmob_Initial initial = Bmob_Initial.Initial();
+
+        private BmobWindows Bmob = new BmobWindows();
+        private Bmob_Initial initial = Bmob_Initial.Initial();
+
         /// <summary>
         /// Json序列化所有分类
         /// </summary>
@@ -57,14 +56,15 @@ namespace ITResourceLibrary.HandlerData
                 {
                     foreach (DataRow row_ in tablecode.Rows)
                     {
-                        
-                        if (row_["Title"].ToString() == row["Name"].ToString()) {
+                        if (row_["Title"].ToString() == row["Name"].ToString())
+                        {
                             if (row_["Visible"].ToString() == "Invisible" && PublicPermission((string)SessionHelp.Get("UserName")))
-                                { pri = true; }
+                            { pri = true; }
                             Color = "black"; Icon = "glyphicon glyphicon-pencil"; break;
                         }
                     }
-                    if (pri) {
+                    if (pri)
+                    {
                         continue;
                     }
                     foreach (DataRow row_ in table.Rows)
@@ -86,6 +86,7 @@ namespace ITResourceLibrary.HandlerData
             string JsonData = JsonConvert.SerializeObject(list);
             return JsonData;
         }
+
         /// <summary>
         /// 获取所有分类
         /// </summary>
@@ -117,10 +118,13 @@ namespace ITResourceLibrary.HandlerData
                 Operation.Kind_Data = table;
                 return table;
             }
-            else {
-                //Operation.Kind_Data = (DataTable)HttpContext.Current.Application["Kind_tb"]; 
-                return Operation.Kind_Data; }
+            else
+            {
+                //Operation.Kind_Data = (DataTable)HttpContext.Current.Application["Kind_tb"];
+                return Operation.Kind_Data;
+            }
         }
+
         /// <summary>
         /// 获取所有代码数据
         /// </summary>
@@ -156,12 +160,13 @@ namespace ITResourceLibrary.HandlerData
 
                 return table;
             }
-            else {
-                //Operation.Code_Data = (DataTable)HttpContext.Current.Application["Code_tb"]; 
-                return Operation.Code_Data; }
-
-
+            else
+            {
+                //Operation.Code_Data = (DataTable)HttpContext.Current.Application["Code_tb"];
+                return Operation.Code_Data;
+            }
         }
+
         /// <summary>
         /// 获得代码数据
         /// </summary>
@@ -181,7 +186,8 @@ namespace ITResourceLibrary.HandlerData
                         Title = future.Result.results[0].Title,
                         Code = future.Result.results[0].Code,
                         Author = future.Result.results[0].Author,
-                        Visible=future.Result.results[0].Visible
+                        Visible = future.Result.results[0].Visible,
+                        ParentTitle = OperationLog.getOperationInstance().getParent(future.Result.results[0].Title)
                     });
                     return JsonData;
                 }
@@ -195,13 +201,13 @@ namespace ITResourceLibrary.HandlerData
                     Title = query.Field<string>("Title"),
                     Code = query.Field<string>("Code"),
                     Author = query.Field<string>("Author"),
-                    Visible=query.Field<string>("Visible")
+                    Visible = query.Field<string>("Visible"),
+                    ParentTitle = OperationLog.getOperationInstance().getParent(query.Field<string>("Title"))
                 });
                 return JsonData;
             }
-
-
         }
+
         /// <summary>
         /// 修改分类
         /// </summary>
@@ -233,8 +239,8 @@ namespace ITResourceLibrary.HandlerData
                 return true;
             }
             else return false;
-
         }
+
         /// <summary>
         /// 修改代码数据
         /// </summary>
@@ -242,7 +248,7 @@ namespace ITResourceLibrary.HandlerData
         /// <param name="Code"></param>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public string ModifyCode(string Title, string Code, string Id, string OldTitle,string Visible)
+        public string ModifyCode(string Title, string Code, string Id, string OldTitle, string Visible)
         {
             try
             {
@@ -292,14 +298,14 @@ namespace ITResourceLibrary.HandlerData
                     }
                 }
                 else return "出错,修改代码数据失败";
-
             }
             catch (Exception e)
             {
                 return "出错," + e.Message;
             }
         }
-        public string ModifyCode(string Title,string Code,string Visible)
+
+        public string ModifyCode(string Title, string Code, string Visible)
         {
             var linq = from r in Operation.Code_Data.AsEnumerable() where r.Field<string>("Title") == Title select r;
             string Objectid = linq.First().Field<string>("ObjectId");
@@ -308,7 +314,8 @@ namespace ITResourceLibrary.HandlerData
             codeModel.Code = Code;
             codeModel.Visible = Visible;
             var future1 = Bmob.UpdateTaskAsync<BmobCodeModel>(codeModel);
-            if(future1.Result is IBmobWritable) {
+            if (future1.Result is IBmobWritable)
+            {
                 linq = from r in Code_Data.AsEnumerable() where r.Field<string>("Title") == Title select r;
                 foreach (var data in linq)
                 {
@@ -321,6 +328,7 @@ namespace ITResourceLibrary.HandlerData
             }
             return "修改失败";
         }
+
         /// <summary>
         /// 删除分类
         /// </summary>
@@ -347,8 +355,8 @@ namespace ITResourceLibrary.HandlerData
                 return "删除成功";
             }
             else return "出错,删除分类失败";
-
         }
+
         /// <summary>
         /// 删除数据
         /// </summary>
@@ -386,6 +394,7 @@ namespace ITResourceLibrary.HandlerData
             }
             else return "出错,删除代码数据失败";
         }
+
         /// <summary>
         /// 添加代码
         /// </summary>
@@ -394,7 +403,7 @@ namespace ITResourceLibrary.HandlerData
         /// <param name="Code"></param>
         /// <param name="Author"></param>
         /// <returns></returns>
-        public string AddData(string Title, string Kind, string Code, string Author,string Visible)
+        public string AddData(string Title, string Kind, string Code, string Author, string Visible)
         {
             try
             {
@@ -434,11 +443,8 @@ namespace ITResourceLibrary.HandlerData
             {
                 return "出错," + e.Message;
             }
-
-
-
-
         }
+
         /// <summary>
         /// 添加分类
         /// </summary>
@@ -453,7 +459,6 @@ namespace ITResourceLibrary.HandlerData
             var future = Bmob.FindTaskAsync<BmobKindModel>("Kind_tb", query);
             if (future.Result.results.Count == 0)
             {
-
                 BmobKindModel kindModel = new BmobKindModel("Kind_tb");
                 kindModel.ParentId = ParentId;
                 kindModel.Name = Name;
@@ -470,6 +475,7 @@ namespace ITResourceLibrary.HandlerData
             }
             else return "已存在该分类";
         }
+
         /// <summary>
         /// 移动分类
         /// </summary>
@@ -491,18 +497,16 @@ namespace ITResourceLibrary.HandlerData
                     {
                         data.SetField<string>("ParentId", NewNode);
                     }
-
                 }
-               // DataSynchronous("Kind_tb");
+                // DataSynchronous("Kind_tb");
                 return "移动成功";
             }
             catch (Exception e)
             {
                 return e.Message;
             }
-
-
         }
+
         /// <summary>
         /// 导入搜索分类
         /// </summary>
@@ -516,7 +520,7 @@ namespace ITResourceLibrary.HandlerData
             ids.Clear();
             listTitles2_public.Clear(); listTitleids2_public.Clear(); listTitles2_private.Clear(); listTitleids2_private.Clear();
 
-             var mJObj = JArray.Parse(data);
+            var mJObj = JArray.Parse(data);
             IList<JToken> delList = new List<JToken>(); //存储需要删除的项
 
             foreach (var ss in mJObj)  //查找某个字段与值
@@ -524,18 +528,17 @@ namespace ITResourceLibrary.HandlerData
                 JObject _o = (JObject)ss;
                 title = new List<string>();
                 id = new List<string>();
-                if(_o["text"].ToString()== "数据库操作超级工具类")
+                if (_o["text"].ToString() == "数据库操作超级工具类")
                 {
-                    string a="";
+                    string a = "";
                 }
                 titleids.Add(_o["text"].ToString());
                 xunhuan((JArray)_o["nodes"]);
                 titles.Add(title);
                 ids.Add(id);
-
             }
             if (PublicPermission((string)SessionHelp.Get("UserName")))
-             {
+            {
                 listTitles2_public.AddRange(titles);
                 listTitleids2_public.AddRange(ids);
             }
@@ -544,11 +547,10 @@ namespace ITResourceLibrary.HandlerData
                 listTitles2_private.AddRange(titles);
                 listTitleids2_private.AddRange(ids);
             }
-            
+
             return JToken.FromObject(titleids).ToString();
-
-
         }
+
         /// <summary>
         /// 递归遍历搜索子节点
         /// </summary>
@@ -561,21 +563,13 @@ namespace ITResourceLibrary.HandlerData
                 if (_o.Property("nodes") != null)
                 {
                     xunhuan((JArray)_o["nodes"]);
-
                 }
                 else
                 {
                     title.Add(_o["text"].ToString());
                     id.Add(_o["Id"].ToString());
                 }
-
             }
-
         }
-
-        
     }
- 
- 
-
 }

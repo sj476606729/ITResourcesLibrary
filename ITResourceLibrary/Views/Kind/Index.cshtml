@@ -27,17 +27,21 @@
             <div id="tree" style="width:100%;overflow:auto;font-size:13px"></div>
         </td>
     </tr>
-    
 </table>
 
 <script>
-        var Nodeid, NodeText, IsKind = false;
-        var AllNode, node_move, typeid;
-        var frames, NodeAuthor, ParentKind;
-
+    var Nodeid, NodeText, IsKind = false;
+    var AllNode, node_move, typeid;
+    var frames, NodeAuthor, ParentKind, operation;
+    var select_title;
+    var Enum = {
+        PUBLIC: "Visible",
+        PRIVATE:"Invisible"
+    }
         $(function () {
             $('#body').css("height", document.documentElement.clientHeight);
             frames = window.parent.window.document.getElementById("frame");
+             operation = window.parent.window.document.getElementById("Operation");
             $.ajax({
                 type: "get",
                 url: '@Url.Action("GetKind","Kind",new { id="Initial"})',//注意此文件必须与当前文件在同一目录下
@@ -76,7 +80,7 @@
 
             var itemArr = [];
             for (var i = 0; i < data.length; i++) {
-                var node = data[i];
+                var node = data[i]; NodeAuthor
                 //data.splice(i, 1)
                 if (node["ParentId"] == parentId) {
                     var newNode = { Id: node.Id, text: node["text"], color: node.color, icon: node.icon };
@@ -125,13 +129,14 @@
                         $(window.parent.window.document.getElementById("title")).val(obj["Title"]);
                         NodeAuthor = obj["Author"];
                         $(window.parent.window.document.getElementById("author")).html("作者：" + obj["Author"]);
-                        
+                        select_title = obj["ParentTitle"]
                         if (obj["Visible"] == "Invisible") {
                             $(window.parent.window.document.getElementById("check")).prop("checked",false)
                             $(window.parent.window.document.getElementById("check")).val('Invisible')
                         } else {
                             $(window.parent.window.document.getElementById("check")).prop("checked","true")
-                            $(window.parent.window.document.getElementById("check")).val('Visible')}
+                            $(window.parent.window.document.getElementById("check")).val('Visible')
+                        }
                     }
                 });
 
@@ -181,9 +186,9 @@
                             var data = TreeData(AllNode, "无");
                             NodeOperate(data);
                         }
-                        
+
                         break;
-                        
+
                     }
                 }
                 var pd = { Title: title, Code: Code, Key: Nodeid, OldTitle: NodeText, Visible: visible }
@@ -201,16 +206,28 @@
                     },
                     success: function (result) {//result为任意定义的用于装载参数变量
                         var obj = eval(result);
+
                         if ((obj.result + "").substr(0, 2) == "出错") {
                             alert(obj.result);
                             AllNode = JSON.parse(Old_AllNode);
                             var data = TreeData(AllNode, "无");
                             NodeOperate(data);
                         }
+                        //=======================================修改提交记录信息===================================
+                        else {
+                            if (visible == Enum.PUBLIC) {
+                                var s_user = "@Html.Action("GetUserName", "Shared")";
+                                var content = "修改了" ;
+                                var adddata = { user: s_user, title: title, content: content, kind: select_title }
+                                ChangeLog(adddata,content);
+                            }
+                            
+                        }
                     }
                 });
             }
-        }
+    }
+
         //删除
         function Delete() {
             if (Nodeid == null) { return; }
@@ -244,7 +261,7 @@
                 });
             } else {
                 if ( NodeAuthor!='@Html.Action("GetUserName","Shared")') { alert("不能删除非本账户的代码数据"); return; }
-
+                var title = $(window.parent.window.document.getElementById("title")).val();
                 var pd = {Key: Nodeid, Title: NodeText }
                 $.ajax({
                     type: "post",
@@ -259,6 +276,16 @@
                     success: function (result) {//result为任意定义的用于装载参数变量
                         var obj = eval(result);
                         if ((obj.result + "").substr(0, 2) == "出错") { alert(obj.result); return; }
+                         //=======================================删除提交记录信息===================================
+                    else
+                        {
+                            if (visible == Enum.PUBLIC) {
+                                var s_user = "@Html.Action("GetUserName", "Shared")";
+                                var content = "删除了";
+                                var adddata = { user: s_user, title: title, content: content, kind: select_title }
+                                ChangeLog(adddata, content);
+                            }
+                        }
                         var data = [];
                         for (var i = 0; i < AllNode.length; i++) {
                             if (AllNode[i]["Id"] != Nodeid) {
@@ -317,7 +344,6 @@
                 }
             }
 
-
         }
         //添加数据
         function AddData() {
@@ -342,7 +368,20 @@
                 },
                 success: function (result) {//result为任意定义的用于装载参数变量
                     var obj = eval(result);
-                    if ((obj.result + "").substr(0, 2) == "出错") { alert(obj.result); result; }
+                    if ((obj.result + "").substr(0, 2) == "出错") {
+                        alert(obj.result);
+                        result;
+                    }
+                    //=======================================添加提交记录信息===================================
+                    else
+                    {
+                        if (visible == Enum.PUBLIC) {
+                            var s_user = "@Html.Action("GetUserName", "Shared")";
+                            var content = "添加了";
+                            var adddata = { user: s_user, title: title, content: content, kind: select_title }
+                            ChangeLog(adddata, content);
+                        }
+                    }
                     var data = { "Id": obj.result, "text": title, "ParentId": id, "color": "black", "icon": "glyphicon glyphicon-pencil" }
                     AllNode.push(data);
                     var jsonDataTree = TreeData(AllNode, "无");
@@ -422,8 +461,35 @@
                 }
             }
 
+    }
+    //上传bmob修改信息
+    function ChangeLog(adddata, content) {
+        var nodeul=operation.contentWindow.document.getElementById("log");
+        var nodeli = document.createElement('li');//创建一个li节点
+        
+        nodeli.style="list-style-type:decimal;margin:10px 0px 10px 0px"
+        var ss = "";
 
-        }
+       // ss += "<li style=\"list-style-type:decimal;margin:10px 0px 10px 0px\">"
+        ss += "<ul id=\"item\">"
+        ss += "<li style=\"color:blue;font-size:15px ;list-style-type:none;margin 0px\">【" + adddata.user + "】" + adddata.content + "<\/li>"
+        ss += "<li style=\"color:blue;font-size:15px ;list-style-type:none;margin 0px\">【" + adddata.title + "】<\/li>"
+        ss += "<li style=\"color:blue;font-size:15px ;list-style-type:none;margin 0px\"> =>【" + adddata.kind+"】<\/li>"
+        ss += "<\/ul >"
+        nodeli.innerHTML += ss;
+       // ss += "<\/li>"
+         var nodeli1 = nodeul.getElementsByTagName('li')[0];//获取ul下第3个节点——秋天
+        nodeul.insertBefore(nodeli,nodeli1);
+        //operation.contentWindow.document.getElementById("log").innerHTML += ss
+         $.ajax({
+            type: "post",
+            url: '@Url.Action("AddLog", "Operation")',
+            data: adddata,
+            dataType: "json",
+            error: function (textstatus) { },
+            success: function (result) { }
+        });
+    }
         //切换
         Shift = function () {
             $(window.parent.window.document.getElementById("Kind_f")).css("width", "0px");

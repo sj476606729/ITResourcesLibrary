@@ -1,7 +1,6 @@
 ﻿using ITResourceLibrary.Helps;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -22,13 +21,14 @@ namespace ITResourceLibrary.Business
                 {
                     filterContext.HttpContext.Response.Redirect(Url.Action("Index", "login") + "?ReturnUrl=" + GetUrl(filterContext.HttpContext.Request.Url.PathAndQuery), true);
                 }
-                catch(Exception e) { }
+                catch (Exception e) { }
             }
             else
             {
                 base.OnActionExecuting(filterContext);
             }
         }
+
         protected string AdminId
         {
             get
@@ -36,6 +36,7 @@ namespace ITResourceLibrary.Business
                 return SessionHelp.Get<string>("UserName");
             }
         }
+
         protected string GetUrl(string path)
         {
             return HttpUtility.UrlEncode(path);
@@ -46,9 +47,8 @@ namespace ITResourceLibrary.Business
         {
             return JsonConvert.SerializeObject(new { result = value });
         }
-        
-        
     }
+
     public class Function
     {
         /// <summary>

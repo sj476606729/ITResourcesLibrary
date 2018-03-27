@@ -24,18 +24,14 @@ tinymce.init({
 
    toolbar: "fullscreen",
 
-
-
    statusbar: false,
 
    toolbar: "formatselect | fontselect | fontsizeselect | forecolor backcolor | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image | hr emoticons | codesample",
-
 
 }).then(function (editors) {
             tinymce.activeEditor.shortcuts.remove('meta+s');
             tinymce.activeEditor.execCommand('mceFullScreen');
             });
-
     </script>
 
     <script>
@@ -51,16 +47,14 @@ tinymce.init({
     </script>
 </head>
 
-
 <body id="b" style="border:none;">
-
 
 <textarea id="editor" style="border:none"></textarea>
 <script>
 	// 设置编辑模式
         var setMode = function (mode) {
             tinymce.activeEditor.setMode(mode);
-           
+
         };
         var data = '<div>'+
             '< p > 参考网址：</p>'+
@@ -68,8 +62,6 @@ tinymce.init({
                 '<hr />'+
                 '<p>&nbsp;</p>'+
             '</div >'
-   
 </script>
-
 </body>
 </html> 
