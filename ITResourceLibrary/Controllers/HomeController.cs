@@ -15,6 +15,7 @@ namespace ITResourceLibrary.Controllers
 {
     public class HomeController : Currency
     {
+        //代码分类操作
         KindCodeOperation operation = new KindCodeOperation();
         BaseOperation<KindModel, BmobKindModel> kind = new BaseOperation<KindModel, BmobKindModel>();
         BaseOperation<CodeModel, BmobCodeModel> code = new BaseOperation<CodeModel, BmobCodeModel>();
