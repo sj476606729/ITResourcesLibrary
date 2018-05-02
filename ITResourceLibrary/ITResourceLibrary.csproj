@@ -26,6 +26,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,6 +36,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,6 +46,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Bmob-Windows">
@@ -53,19 +56,23 @@
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Qiniu.7.3.1.1\lib\Net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Qiniu, Version=7.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Qiniu.7.3.1.1\lib\Net40\Qiniu.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
@@ -74,10 +81,6 @@
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Net.Http">
-    </Reference>
-    <Reference Include="System.Net.Http.WebRequest">
     </Reference>
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -89,10 +92,6 @@
     </Reference>
     <Reference Include="System.Web.Optimization">
       <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -106,6 +105,7 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="TinyMapper, Version=2.0.0.40, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\TinyMapper.2.0.8\lib\net45\TinyMapper.dll</HintPath>
     </Reference>
@@ -119,9 +119,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.ApplicationInsights">
       <HintPath>..\packages\Microsoft.ApplicationInsights.2.2.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
     </Reference>
@@ -148,30 +145,31 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Business\AccountOperation.cs" />
+    <Compile Include="Business\BaseOperation.cs" />
     <Compile Include="Business\Currency.cs" />
-    <Compile Include="Business\Interface\Interface.cs" />
+    <Compile Include="Business\FileManage\Util.cs" />
+    <Compile Include="Business\Models\AccountModel.cs" />
     <Compile Include="Business\Models\CodeModel.cs" />
     <Compile Include="Business\Models\KindModel.cs" />
     <Compile Include="Business\Models\OperationModel.cs" />
-    <Compile Include="Business\OperationLog.cs" />
     <Compile Include="Business\Search.cs" />
+    <Compile Include="Controllers\AppInterfaceController.cs" />
+    <Compile Include="Controllers\FileManageController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\KindController.cs" />
     <Compile Include="Controllers\loginController.cs" />
     <Compile Include="Controllers\OperationController.cs" />
-    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\SharedController.cs" />
-    <Compile Include="Controllers\tinyMceController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Business\Operation.cs" />
+    <Compile Include="Business\KindCodeOperation.cs" />
     <Compile Include="Helps\DataMapperHelp.cs" />
     <Compile Include="Helps\SessionHelp.cs" />
     <Compile Include="Models\AccountViewModel.cs" />
     <Compile Include="Business\Models\BmobDataModel.cs" />
-    <Compile Include="Models\CodeModel.cs" />
-    <Compile Include="Models\KindModel.cs" />
+    <Compile Include="Models\CodeViewModel.cs" />
+    <Compile Include="Models\KindViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -179,6 +177,8 @@
     <Content Include="Content\bootstrap-switch\bootstrap2\bootstrap-switch.min.css" />
     <Content Include="Content\bootstrap-switch\bootstrap3\bootstrap-switch.css" />
     <Content Include="Content\bootstrap-switch\bootstrap3\bootstrap-switch.min.css" />
+    <Content Include="Content\ico\head-logo.jpg" />
+    <Content Include="Content\KindCodePage.css" />
     <Content Include="Frame\bootstrap\css\bootstrap-theme.css" />
     <Content Include="Frame\bootstrap\css\bootstrap-theme.min.css" />
     <Content Include="Frame\bootstrap\css\bootstrap.css" />
@@ -193,8 +193,30 @@
     <Content Include="Content\Loading.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Frame\qiniu\common\common.js" />
+    <Content Include="Frame\qiniu\component\ui.js" />
+    <Content Include="Frame\qiniu\component\widget.js" />
+    <Content Include="Frame\qiniu\images\default.png" />
+    <Content Include="Frame\qiniu\images\favicon.ico" />
+    <Content Include="Frame\qiniu\images\loading.gif" />
+    <Content Include="Frame\qiniu\index.html" />
+    <Content Include="Frame\qiniu\js\moxie.js" />
+    <Content Include="Frame\qiniu\js\moxie.min.js" />
+    <Content Include="Frame\qiniu\js\Moxie.swf" />
+    <Content Include="Frame\qiniu\js\plupload.full.min.js" />
+    <Content Include="Frame\qiniu\main.js" />
+    <Content Include="Frame\qiniu\scripts\uploadWithForm.js" />
+    <Content Include="Frame\qiniu\scripts\uploadWithOthers.js" />
+    <Content Include="Frame\qiniu\scripts\uploadWithSDK.js" />
+    <Content Include="Frame\qiniu\style\index.css" />
+    <Content Include="Scripts\artDialog\css\ui-dialog.css" />
+    <Content Include="Scripts\artDialog\dist\dialog-min.js" />
+    <Content Include="Scripts\artDialog\dist\dialog-plus-min.js" />
+    <Content Include="Scripts\artDialog\dist\dialog-plus.js" />
+    <Content Include="Scripts\artDialog\dist\dialog.js" />
     <Content Include="Scripts\bootstrap-switch.js" />
     <Content Include="Scripts\bootstrap-switch.min.js" />
+    <Content Include="Scripts\help\main.js" />
     <Content Include="Views\login\css\style2.0.css" />
     <Content Include="Views\login\img\1.png" />
     <Content Include="Views\login\img\page1_0.png" />
@@ -282,7 +304,6 @@
     <Content Include="Views\tinyMce\themes\inlite\theme.min.js" />
     <Content Include="Views\tinyMce\themes\modern\theme.min.js" />
     <Content Include="Views\tinyMce\tinymce.min.js" />
-    <Content Include="Views\tinyMce\模板.html" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
@@ -304,6 +325,8 @@
     <Content Include="Views\tinyMce\skins\lightgray\fonts\tinymce.eot" />
     <Content Include="Views\tinyMce\skins\lightgray\fonts\tinymce.ttf" />
     <Content Include="Views\tinyMce\skins\lightgray\fonts\tinymce.woff" />
+    <Content Include="Frame\qiniu\js\Moxie.xap" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -324,7 +347,9 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Views\Web.config" />
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
@@ -333,12 +358,12 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\tinyMce\Index.cshtml" />
     <Content Include="Views\login\Index.cshtml" />
-    <Content Include="Views\Kind\Index.cshtml" />
-    <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Views\Operation\Index.cshtml" />
+    <Content Include="Views\FileManage\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\AppInterface\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

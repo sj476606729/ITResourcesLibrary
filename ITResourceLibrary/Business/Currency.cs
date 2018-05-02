@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -60,6 +61,11 @@ namespace ITResourceLibrary.Business
         {
             if (UserName != "沙俊" && UserName != "沙杰") return true;
             return false;
+        }
+        //转换成通用result结果json
+        public string ToJson(string value)
+        {
+            return JsonConvert.SerializeObject(new { result = value });
         }
     }
 }

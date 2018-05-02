@@ -1,12 +1,13 @@
 ﻿using ITResourceLibrary.Helps;
 using ITResourceLibrary.Models;
 using System.Web.Mvc;
+using ITResourceLibrary.Business;
 
 namespace ITResourceLibrary.Controllers
 {
     public class loginController : Controller
     {
-        
+        AccountOperation Account = new AccountOperation();
         public ActionResult Index(string ReturnUrl)
         {
             SessionHelp.Remove("UserName");
@@ -17,33 +18,16 @@ namespace ITResourceLibrary.Controllers
         [HttpPost]
         public ActionResult Index(AccountViewModel account)
         {
-            if (account.User == "shajun")
+            string name = Account.AllowAccount(account);
+            if (name!=null)
             {
-                if (account.Password == "sj76606729")
-                {
-                    SessionHelp.Set("UserName", "沙俊");
-                    return RedirectToAction("Index", "Home");
-                }
-            }
-            else if (account.User == "shajie")
-            { if (account.Password == "190750991jie") { SessionHelp.Set("UserName", "沙杰"); return RedirectToAction("Index", "Home"); } }
-            else if (account.User == "chenyu")
-            { if (account.Password == "CHENYU") { SessionHelp.Set("UserName", "陈煜"); return RedirectToAction("Index", "Home"); } }
-            else if (account.User == "xichaoqun")
-            { if (account.Password == "XICHAOQUN") { SessionHelp.Set("UserName", "奚超群"); return RedirectToAction("Index", "Home"); } }
-            else if (account.User == "123321")
-            { if (account.Password == "123321") { SessionHelp.Set("UserName", "通用账户"); return RedirectToAction("Index", "Home"); } }
-            else if (account.User == "wangyongming")
-            {
-                if (account.Password == "WANGYONGMING")
-                {
-                    SessionHelp.Set("UserName", "王永明");
-                    return RedirectToAction("Index", "Home");
-                }
+                SessionHelp.Set("UserName", name);
+                return RedirectToAction("Index", "Home");
             }
 
             ViewBag.error = "账号密码有误";
             return View();
         }
+        
     }
 }

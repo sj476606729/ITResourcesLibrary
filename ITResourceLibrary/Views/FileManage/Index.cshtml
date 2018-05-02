@@ -1,0 +1,220 @@
+﻿
+@{
+    Layout = null;
+    ViewBag.Title = "Home Page";
+}
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+   
+    <title>七牛云 - JavaScript SDK</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>  
+    <link href="~/Frame/qiniu/images/favicon.ico" rel="shortcut icon">
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/Frame/qiniu/style/index.css">
+    @*@Scripts.Render("~/bundles/vue")
+    <script type="text/javascript" src="http://vuejs.org/js/vue.min.js"></script>
+    <script type="text/javascript" src="http://unpkg.com/iview/dist/iview.min.js"></script>*@
+</head>
+
+<body style="width:60%">
+   
+    <div class="mainContainer">
+        
+        <form method="post" enctype="multipart/form-data" id="form" action="upload">
+            <div id="box" class="hide">
+                <button class="select-button">选择文件</button>
+                <a class="file-input" id="select"></a>
+            </div>
+            <div id="box2">
+                <button class="select-button">选择文件</button>
+                <input class="file-input" type="file" id="select2" />
+
+                @*<select v-model="model1" style="width:200px">
+                    <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                </select>*@
+
+            </div>
+        </form>
+        <div class="nav-box" style="margin-top:30px">
+            <ul id="myTab" class="nav nav-tabs">
+                <li role="presentation" class="active">
+                    <a href="#h5" name="h5" data-toggle="tab">
+                        七牛文件上传
+                    </a>
+                </li>
+                <li role="presentation">
+                    <a href="#expand" name="expand" data-toggle="tab">重命名文件</a>
+                </li>
+                <li role="presentation">
+                    <a href="#directForm" name="directForm" data-toggle="tab">删除文件</a>
+                </li>
+            </ul>
+            <div id="process" class="tab-content">
+                <div class="tab-pane fade in active" id="h5">
+                    <table class="table table-striped table-hover text-left" style="margin-top:20px;width:50%">
+                        <thead>
+                            <tr>
+                                <th class="col-md-2">Filename</th>
+                                <th class="col-md-1">Size</th>
+                                <th class="col-md-4">Detail</th>
+                                <th class="col-md-4">UrlPath</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fsUploadProgress"></tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="expand" >
+                    <div><h4 style="color:#ff6a00;text-shadow:2px 2px 5px #ff6a00; ">文件名格式：文件名-姓名.后缀名</h4></div>
+                    <div><textarea name="oldname" id="oldname" cols="30" rows="2" placeholder="原文件名"></textarea></div>
+                    <div><textarea name="newname" id="newname" cols="30" rows="2" placeholder="新文件名"></textarea></div>
+                    <div><a class="renamebutton" id="rename">修 改</a></div>
+                    <div><h3 id="renamesucces" hidden>修改成功！请务必修改相关文件链接</h3></div>
+                </div>
+                <div class="tab-pane fade" id="directForm">
+                    
+                    <div><textarea name="delete" id="oldfilename" cols="30" rows="2" placeholder="文件名"></textarea></div>
+                    <div><a class="renamebutton" id="deletefile">删 除</a></div>
+                    <div><h3 id="deletesucces" hidden>删除成功！请务必删除相关文件链接</h3></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="display">
+                        <a id="imgContainer">
+                            <img data-key="">
+                        </a>
+                    </div>
+                    <div class="buttonList">
+                        <ul>
+                            <li>
+                                <div class="watermark">
+                                    <span>水印控制：</span>
+                                    <a href="#" data-watermark="NorthWest" class="btn btn-default disabled">
+                                        左上角
+                                    </a>
+                                    <a href="#" data-watermark="SouthWest" class="btn btn-default">
+                                        左下角
+                                    </a>
+                                    <a href="#" data-watermark="NorthEast" class="btn btn-default">
+                                        右上角
+                                    </a>
+                                    <a href="#" data-watermark="SouthEast" class="btn btn-default">
+                                        右下角
+                                    </a>
+                                    <a href="#" data-watermark="false" class="btn btn-default">
+                                        无水印
+                                    </a>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="imageView2">
+                                    <span>缩略控制：</span>
+                                    <a href="#" data-imageview="large" class="btn btn-default disabled">
+                                        大缩略图
+                                    </a>
+                                    <a href="#" data-imageview="middle" class="btn btn-default">
+                                        中缩略图
+                                    </a>
+                                    <a href="#" data-imageview="small" class="btn btn-default">
+                                        小缩略图
+                                    </a>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="imageMogr2">
+                                    <span>旋转控制：</span>
+                                    <a href="#" data-imagemogr="left" class="btn btn-default no-disable-click">
+                                        逆时针
+                                    </a>
+                                    <a href="#" data-imagemogr="right" class="btn btn-default no-disable-click">
+                                        顺时针
+                                    </a>
+                                    <a href="#" data-imagemogr="no-rotate" class="btn btn-default">
+                                        无旋转
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal -->
+    </div>
+    <script  charset="gbk" src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <!--<![endif]-->
+    
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcss.com/json3/3.3.2/json3.min.js"></script>
+    <script type="text/javascript" src='~/Frame/qiniu/js/plupload.full.min.js'></script>
+    <script type="text/javascript" src="https://cdn.bootcss.com/babel-polyfill/7.0.0-beta.42/polyfill.min.js"></script>
+    <script type="text/javascript" src='http://jssdk-v2.demo.qiniu.io/dist/qiniu.min.js'></script>
+
+    <script type="text/javascript" src='~/Frame/qiniu/component/widget.js'></script>
+    <script type="text/javascript" src='~/Frame/qiniu/common/common.js'></script>
+    <script type="text/javascript" src='~/Frame/qiniu/component/ui.js'></script>
+    <script type="text/javascript" src='~/Frame/qiniu/scripts/uploadWithOthers.js'></script>
+    <script type="text/javascript" src='~/Frame/qiniu/scripts/uploadWithForm.js'></script>
+    <script type="text/javascript" src='~/Frame/qiniu/scripts/uploadWithSDK.js'></script>
+    <script type="text/javascript" src='~/Frame/qiniu/main.js'></script>
+    <script>
+        //var vm = new Vue({
+        //    el: "#box2",
+        //    data: {
+        //        cityList: [
+        //            {
+        //                value: 'New York',
+        //                label: 'New York'
+        //            },
+        //            {
+        //                value: 'London',
+        //                label: 'London'
+        //            },
+        //            {
+        //                value: 'Sydney',
+        //                label: 'Sydney'
+        //            },
+        //            {
+        //                value: 'Ottawa',
+        //                label: 'Ottawa'
+        //            },
+        //            {
+        //                value: 'Paris',
+        //                label: 'Paris'
+        //            },
+        //            {
+        //                value: 'Canberra',
+        //                label: 'Canberra'
+        //            }
+        //        ],
+        //        model1: ''
+        //    }
+
+        //});
+    </script>
+</body>
+
+<!--[if lte IE 8]>
+  <script src="http://cdn.bootcss.com/jquery/1.9.0/jquery.min.js"></script>
+<![endif]-->
+<!--[if gt IE 8]>
+  <script src="http://cdn.static.runoob.com/libs/jquery/1.10.2/jquery.min.js"></script>
+<![endif]-->
+<!--[if !IE]><!-->
+
+
+</html>

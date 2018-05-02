@@ -1,341 +1,205 @@
 ﻿using ITResourceLibrary.Business;
-using ITResourceLibrary.Business.Models;
+using System.Linq;
 using ITResourceLibrary.HandlerData;
 using ITResourceLibrary.Helps;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace Search
 {
     public class SearchOperate : Function
     {
-        //搜索
-        public string SearchTitle(string Title, int select)
+        List<string> selectTitles = new List<string>();
+        List<ReturnTitle> list = new List<ReturnTitle>();
+        ///搜索
+        public string SearchTitle(string Title, string Select)
         {
-            Util util = Util.Instance;
-            ArrayList list = new ArrayList();//装载标题
-            ArrayList list2 = new ArrayList();//装载标题id
-            ArrayList result = new ArrayList();//搜索完返回结果
 
-            if (Operation.Code_Data == null) { return "还未初始化，请等待"; }
-
-            if (PublicPermission((string)SessionHelp.Get("UserName")))//判断是否为私有，分两组数据类分别存共有和私有
+            List<ListData> result = new List<ListData>();//搜索完返回结果
+            if (KindCodeOperation.CodeData == null) { return "还未初始化，请等待"; }
+            
+            if (Select == "所有")//判断是否为所有
             {
-                if (Operation.listTitles2_public.Count == Operation.listTitleids2_public.Count)
-                {
-                    if (select == 0)//判断是否为所有
-                    {
-                        foreach (var i in Operation.listTitles2_public)
-                        {
-                            list.AddRange(i); list2.AddRange(i);
-                        }
-                    }
-                    else
-                    {
-                        list.AddRange(Operation.listTitles2_public[select]);
-                        list2.AddRange(Operation.listTitleids2_public[select]);
-                    }
-                }
+            Titles("无");
             }
             else
             {
-                if (Operation.listTitles2_private.Count == Operation.listTitleids2_private.Count)
+            string id = (from a in KindCodeOperation.KindData where a.ParentId == "无" && a.Name == Select select a).Single().objectId;
+            Titles(id);
+            }
+            if (PublicPermission((string)SessionHelp.Get("UserName")))//判断是否为一半账户，分两组数据类分别存共有和私有
+            {
+                int i = 0;
+                do
                 {
-                    if (select == 0)//判断是否为所有
+                    string data = (string)selectTitles[i];
+                    if (KindCodeOperation.CodeData.Where(x => x.Title == data).Single().Visible == "Invisible")
                     {
-                        foreach (var i in Operation.listTitles2_private)
-                        {
-                            list.AddRange(i); list2.AddRange(i);
-                        }
+                        selectTitles.Remove(data);i--;
                     }
-                    else
+                    i++;
+                } while (i < selectTitles.Count);
+            }
+            result= SearchEngines.Search(selectTitles, Title);//开始搜索并返回结果
+            foreach(var a in result)//使得前端高亮匹配显示
+            {
+                List<int> count = new List<int>();
+                for(int i=0;i<a.Word.Length -1;i++)
+                {
+                    int str = a.Search.ToLower().IndexOf(a.Word[i]);
+                    for(int j = str; j < str + a.Word[i].Length; j++)
                     {
-                        list.AddRange(Operation.listTitles2_private[select]);
-                        list2.AddRange(Operation.listTitleids2_private[select]);
+                        count.Add(j);
                     }
                 }
+                string Result = "<li onclick=\"ShowData(&quot;" + a.Search+ "&quot;,this)\">";
+                for (int i = 0; i < a.Search.Length; i++)
+                {
+                    
+                    if (count.Contains(i))
+                    {
+                        Result += "<div style=\"color:red\">" + a.Search.Substring(i, 1) + "</div>";
+                    }
+                    else { Result += "<div>" + a.Search.Substring(i, 1) + "</div>"; }
+                }
+                List<string> PathKind = new List<string>();//找出此标题的父分类
+                var data = KindCodeOperation.CodeData.Where(x => x.Title == a.Search).Single();
+                string id = KindCodeOperation.KindData.Where(x => x.objectId == data.KindObjectId ).Single().ParentId;
+                KindCodeOperation.KindPath(id, ref PathKind);
+                Result += "<div class='seach-move'><div style='float:none'>分类:" + PathKind[PathKind.Count-1]+"</div><div style='float:none'>作者:"+data.Author+"</div></div>";
+                Result += "</li>";
+                list.Add(new ReturnTitle() { title = Result });
             }
-
-            CallBack callback = new CallBack();
-            util.paixu(list, list2, Title, callback);
-            return callback.result;
+            string jsonData = JsonConvert.SerializeObject(list);
+            return jsonData;
+        }
+        /// <summary>
+        /// 根据选择分类获取搜索相关标题
+        /// </summary>
+        /// <param name="selectid"></param>
+        public void Titles(string selectid)
+        {
+            string title = "";
+            bool IsTitle = false;
+            foreach(var data in KindCodeOperation.KindData)
+            {
+                if (title.Length == 0)
+                {
+                    if (data.objectId == selectid) { title = data.Name; }
+                }
+                if(data.ParentId==selectid)
+                {
+                    IsTitle = true;
+                    Titles(data.objectId);
+                }
+            }
+            if (IsTitle == false)
+            {
+                var data = KindCodeOperation.CodeData.Where(x => x.Title == title).ToList();
+                if (data.Count > 0)
+                {
+                    selectTitles.Add(title);
+                }
+                
+            }
+            
         }
     }
 
-    public class CallBack : Back
-    {
-        public string result { get; set; }
 
-        public void success(ArrayList listtitle, ArrayList listtitleid)
+
+
+public class ReturnTitle
+    {
+        public string title { get; set; }
+    }
+    /// <summary>
+    /// 搜索引擎
+    /// </summary>
+
+    public class SearchEngines
+    {
+        public static List<ListData> Search(List<string> Source, string KeyWord)
         {
-            if (listtitle.Count > 0)
+            string[] key = new string[Source.Count];
+            string[] Word = new string[Source.Count];
+            KeyWord = KeyWord.ToLower();
+            Regex mRegex = new Regex("[a-zA-Z]+");
+            MatchCollection mMactchCol;
+            for (int i = 0; i < key.Length; i++)
             {
-                ArrayList listTitles = new ArrayList();
-                List<TreeModel> lists = Operation.listTitles;
-                string id, parentid, title2 = "";
-                //对搜索出来的结果添加组名
-                for (int i = 0; i < listtitle.Count; i++)
+                key[i] = ""; Word[i] = "";
+                mMactchCol = mRegex.Matches(Source[i].ToLower());
+                foreach (Match mMatch in mMactchCol)
                 {
-                    for (int j = 0; j < lists.Count; j++)
+                    Word[i] += mMatch.ToString() + ",";
+                }
+            }
+            for (int i = KeyWord.Length; i > 1; i--)
+            {
+                for (int j = 0; j <= KeyWord.Length - i; j++)
+                {
+                    string search = KeyWord.Substring(j, i);
+                    Regex regChina = new Regex("^[\u4e00-\u9fbb]+$");
+                    Regex regEnglish = new Regex("^[a-zA-Z]+$");
+                    if (!regEnglish.IsMatch(search) && !regChina.IsMatch(search))
+                        continue;
+                    for (int k = 0; k < Source.Count; k++)
                     {
-                        if (listtitle[i].ToString() == lists[j].text)
+                        string[] split = key[k].Split(',');//检查是否已经包含关键词
+                        bool Continue = false;
+                        foreach (string a in split)
                         {
-                            id = lists[j].Id;
-                            parentid = lists[j].ParentId;
-                            for (int k = 0; k < lists.Count; k++)
+                            if (a.Contains(search)) { Continue = true; break; }
+                        }
+                        if (Continue) continue;
+                        if (regEnglish.IsMatch(search))//判断关键词是不是英文
+                        {
+                            split = Word[k].Split(',');//检查字母是否符合搜索条件
+                            float length = 10;
+                            foreach (string a in split)
                             {
-                                if (lists[k].Id == parentid)
+                                if (a.Contains(search))
                                 {
-                                    title2 = "【" + lists[k].text + "】>" + title2;
-                                    if (lists[k].ParentId == "无") break;
-                                    parentid = lists[k].ParentId;
-                                    k = -1;
+                                    if (a.Length < length) length = a.Length;
                                 }
                             }
-                            listTitles.Add(title2);
-                            title2 = "";
+                            double b = search.Length / length;
+                            if ((search.Length / length) < 0.6)//用来判断搜索的字母长度和单词长度比例，小于一定比例不符合搜索条件
+                                continue;
                         }
+
+                        if (Source[k].ToLower().Contains(search)) { key[k] += (search + ","); }
                     }
                 }
-                string json = "[";
-                string json2 = "[";
-                string json3 = "[";
-                foreach (object title in listtitle)
-                {
-                    json += "{\"title\":\"" + title.ToString() + "\"},";
-                }
-                foreach (object data in listtitleid)
-                {
-                    json2 += "{\"objectid\":\"" + data.ToString() + "\"},";
-                }
-                foreach (string title in listTitles)
-                {
-                    json3 += "{\"parent\":\"" + title + "\"},";
-                }
-                json = json.Substring(0, json.Length - 1) + "]";
-                json2 = json2.Substring(0, json2.Length - 1) + "]";
-                json3 = json3.Substring(0, json3.Length - 1) + "]";
-                result = "{\"result\":" + json + ",\"objectids\":" + json2 + ",\"parents\":" + json3 + "}";
             }
-            else result = "未搜到信息";
+            List<ListData> resultList = new List<ListData>();
+            for (int i = 0; i < key.Count(); i++)
+            {
+                resultList.Add(new ListData { Search = key[i] , Key=i });
+            }
+            resultList.Sort(
+                delegate (ListData x, ListData y)
+                {
+                    if (x.Search.Length > y.Search.Length) return -1; else return 1;
+                }
+                );
+            List<ListData> result = new List<ListData>();
+            foreach (ListData a in resultList)
+            {
+                if (a.Search.Length == 0) break;
+                result.Add(new ListData() { Search = Source[a.Key], Word = a.Search.Split(',') });
+            }
+            return result;
         }
     }
-
-    public class Util
+    public class ListData
     {
-        private static Util util = null;
-        /**
-         * equls 和 plus根据自己需要调整大小
-         */
-
-        //匹配值达到equls 则在listview中显示出来（匹配值为最终匹配值包含了plus）
-        private const float equls = 0.3f;
-
-        //全包含情况下匹配值再加一个plus
-        private const float plus = 0.25f;
-
-        private Util()
-        {
-        }
-
-        public static Util Instance
-        {
-            get
-            {
-                if (util == null)
-                {
-                    util = new Util();
-                }
-                return util;
-            }
-        }
-
-        /// <summary>
-        /// 入口方法返回降序的ArrayList类型
-        /// </summary>
-        /// <param name="数据搜索出来的数据集"></param>
-        /// <param name="搜索的关键字"></param>
-        /// <returns></returns>
-        public void paixu(ArrayList array, ArrayList arrayid, String title, Back iback)
-        {
-            if (title.Length == 0)
-            {
-                iback.success(array, arrayid);
-            }
-            title = title.ToLower();
-            string[] array_s = (string[])array.ToArray(typeof(string));
-            double[] num = new double[array.Count];
-            for (int i = 0; i < array.Count; i++)
-            {
-                num[i] = (similarCalc(array[i].ToString().ToLower(), title));
-                num[i] += (similarCalc2(array[i].ToString().ToLower(), title));
-                if (array[i].ToString().ToLower().Contains(title))
-                {
-                    num[i] += plus;
-                }
-            }
-
-            double b;
-            string s, c;
-            for (int i = 0; i < array.Count - 1; i++)
-            {
-                for (int j = i + 1; j < array.Count; j++)
-                {
-                    if (num[i] < num[j])
-                    {
-                        s = array_s[j];
-                        array_s[j] = array_s[i];
-                        array_s[i] = s;
-
-                        b = num[j];
-                        num[j] = num[i];
-                        num[i] = b;
-
-                        c = arrayid[j].ToString();
-                        arrayid[j] = arrayid[i];
-                        arrayid[i] = c;
-                    }
-                }
-            }
-
-            array = new ArrayList(array_s);
-            ArrayList array2 = new ArrayList();
-            ArrayList array3 = new ArrayList();
-            //排除
-            for (int i = 0; i < array.Count; i++)
-            {
-                if (num[i] > equls)
-                {
-                    array2.Add(array[i]);
-                    array3.Add(arrayid[i]);
-                }
-            }
-
-            // MessageBox.Show("" + array2.Count);
-            iback.success(array2, array3);
-        }
-
-        /**
-        *此处直至最后为字符串匹配算法
-*/
-
-        public static double similarCalc(String s1, String s2)
-        {
-            int value = matrix(s1, s2);
-
-            return 1 - (double)value / Math.Max(s1.Length, s2.Length);
-        }
-
-        public static int matrix(String s1, String s2)
-        {
-            int[,] matrix;
-
-            int n = s1.Length;
-
-            int m = s2.Length;
-
-            int i;
-
-            int j;
-
-            char c1;
-
-            char c2;
-
-            int temp;
-
-            if (n == 0) return m;
-
-            if (m == 0) return n;
-
-            matrix = new int[n + 1, m + 1];
-
-            for (i = 0; i <= n; i++)
-            {
-                matrix[i, 0] = i;
-            }
-
-            for (j = 0; j <= m; j++)
-            {
-                matrix[0, j] = j;
-            }
-
-            for (i = 1; i <= n; i++)
-            {
-                c1 = s1.ToCharArray()[i - 1];
-
-                for (j = 1; j <= m; j++)
-                {
-                    c2 = s2.ToCharArray()[j - 1];
-
-                    if (c1 == c2) temp = 0;
-                    else temp = 1;
-
-                    matrix[i, j] = min(matrix[i - 1, j] + 1, matrix[i, j - 1] + 1, matrix[i - 1, j - 1] + temp);
-                }
-            }
-
-            return matrix[n, m];
-        }
-
-        private static int min(int one, int two, int three)
-        {
-            int min = one;
-
-            if (two < min) min = two;
-
-            if (three < min) min = three;
-
-            return min;
-        }
-
-        /*字符倒序*/
-
-        public static double similarCalc2(String s1, String s2)
-        {
-            int value = matrix(swapWords(s1), s2);
-
-            return 1 - (double)value / Math.Max(s1.Length, s2.Length);
-        }
-
-        /**将字符倒过来*/
-
-        public static String swapWords(String str)
-        {
-            char[] arr = str.ToCharArray();
-
-            swap(arr, 0, arr.Length - 1);
-
-            int begin = 0;
-
-            for (int i = 1; i < arr.Length; i++)
-            {
-                if (arr[i] == ' ')
-                {
-                    swap(arr, begin, i - 1);
-
-                    begin = i + 1;
-                }
-            }
-
-            return new String(arr);
-        }
-
-        private static void swap(char[] arr, int begin, int end)
-        {
-            while (begin < end)
-            {
-                char temp = arr[begin];
-
-                arr[begin] = arr[end];
-
-                arr[end] = temp;
-
-                begin++;
-
-                end--;
-            }
-        }
+        public string Search { get; set; }
+        public int Key { get; set; }
+        public string[] Word { get; set; }
     }
 }

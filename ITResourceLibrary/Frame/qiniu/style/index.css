@@ -1,0 +1,150 @@
+body {
+  background-color: rgb(249, 249, 249);
+}
+.navbar {
+  background-color: #fff;
+}
+.mainContainer {
+  position: relative;
+}
+.mainContainer {
+  width: 1170px;
+  margin: 0 auto;
+  padding: 15px 15px;
+}
+.mainContainer .row .tip li {
+  list-style: none;
+}
+.mainContainer .nav-box ul li a {
+  color: #777;
+}
+#box,
+#box2 {
+  margin-top: 20px;
+  height: 46px;
+}
+.fragment-group {
+  overflow: hidden;
+  padding-left: 0;
+}
+.hide {
+  visibility: hidden;
+}
+.fragment-group .fragment {
+  float: left;
+  width: 30%;
+  padding-right: 10px;
+  list-style: none;
+  margin-top: 10px;
+}
+.file-input {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 130px;
+  height: 46px;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.mainContainer .select-button {
+  position: absolute;
+  background-color: #00b7ee;
+  color: #fff;
+  font-size: 18px;
+  padding: 0 30px;
+  line-height: 44px;
+  font-weight: 100;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+.speed {
+  margin-top: 15px;
+}
+.control-upload {
+  line-height: 14px;
+  margin-left: 10px;
+}
+.control-container {
+  float: left;
+  width: 20%;
+}
+#totalBar {
+  margin-bottom: 40px;
+  float: left;
+  width: 80%;
+  height: 30px;
+  border: 1px solid;
+  border-radius: 3px;
+}
+.linkWrapper img {
+  width: 100px;
+  height: 100px;
+}
+.modal-body {
+  text-align: center;
+}
+.buttonList a {
+  padding: 5px 10px;
+  background: #fff;
+  border-radius: 5px;
+  color: #000;
+  margin-left: 10px;
+  cursor: pointer;
+}
+.buttonList ul {
+  text-align: left;
+}
+.buttonList li {
+  list-style: none;
+  margin-top: 15px;
+}
+.disabled {
+  background: #ccc;
+}
+.display a {
+  display: block;
+  background: #fff;
+}
+.renamebutton {
+    margin-top: 10px;
+    margin-left: 10px;
+	-moz-box-shadow: 0px 0px 0px 2px #9fb4f2;
+	-webkit-box-shadow: 0px 0px 0px 2px #9fb4f2;
+	box-shadow: 0px 0px 0px 2px #9fb4f2;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #7892c2), color-stop(1, #476e9e));
+	background:-moz-linear-gradient(top, #7892c2 5%, #476e9e 100%);
+	background:-webkit-linear-gradient(top, #7892c2 5%, #476e9e 100%);
+	background:-o-linear-gradient(top, #7892c2 5%, #476e9e 100%);
+	background:-ms-linear-gradient(top, #7892c2 5%, #476e9e 100%);
+	background:linear-gradient(to bottom, #7892c2 5%, #476e9e 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#7892c2', endColorstr='#476e9e',GradientType=0);
+	background-color:#7892c2;
+	-moz-border-radius:10px;
+	-webkit-border-radius:10px;
+	border-radius:10px;
+	border:1px solid #4e6096;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	padding:6px 25px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #283966;
+}
+.renamebutton:hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #476e9e), color-stop(1, #7892c2));
+	background:-moz-linear-gradient(top, #476e9e 5%, #7892c2 100%);
+	background:-webkit-linear-gradient(top, #476e9e 5%, #7892c2 100%);
+	background:-o-linear-gradient(top, #476e9e 5%, #7892c2 100%);
+	background:-ms-linear-gradient(top, #476e9e 5%, #7892c2 100%);
+	background:linear-gradient(to bottom, #476e9e 5%, #7892c2 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#476e9e', endColorstr='#7892c2',GradientType=0);
+	background-color:#476e9e;
+    text-decoration:none;
+}
+.renamebutton:active {
+	position:relative;
+	top:1px;
+    text-decoration:none;
+    
+}

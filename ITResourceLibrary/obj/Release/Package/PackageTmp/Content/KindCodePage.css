@@ -1,0 +1,196 @@
+﻿body {
+    background-color: gainsboro;
+    height: 100%;
+    width: 100%;
+
+}
+
+.KindCode *{
+    padding:0;margin:0;
+    float:left;
+}
+.KindCode {
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    padding-top: 0.5%;
+    padding-left: 5px;
+}
+
+    .KindCode .body-left {
+        width: 256px;
+        height: 100%;
+        border-radius: 5px;
+        display: none;
+    }
+
+
+   
+
+    
+    .KindCode .left-head-one   {
+        width:100%;
+        height:26px;
+    }
+
+
+    .KindCode .font-operate {
+        color: antiquewhite;
+        background-color:darkcyan;
+        border-radius: 3px;
+        text-align: center;
+        height: 100%;
+        line-height: 26px;
+        border: solid;
+        border-color: white;
+        border-width: thin;
+        font-weight:500;
+        cursor: pointer;
+        font-size:12px;
+    }
+        .KindCode .font-operate:hover{
+              color:greenyellow;
+        }
+        .KindCode  .font-operate:active {
+           background-color:blue;
+        }
+        
+        .KindCode .body-left .left-tree * {
+            float: none;
+            font-size:13px;
+            
+        }
+  
+    
+    .KindCode .body-left .left-tree .indent {
+        margin-left: 0;
+        margin-right: 8px;
+    }
+    
+    .KindCode .body-left .left-tree {
+        width: 100%;
+        height: 90%;
+        margin-top: 1%;
+        clear: both;
+    }
+    .KindCode .body-left ul li {
+        height: 30px;
+        line-height: 30px;
+        padding-left: 3%;
+        background-color: gainsboro;
+        border: none;
+    }
+
+/*编辑器样式*/
+
+    .KindCode .Code-body {
+        max-width:1000px;
+        min-width: 300px;
+        width:60%;
+        height: 100%;
+        margin-left: 0.5%;
+    }
+
+
+/*搜索块样式*/
+    .KindCode .Search {
+        width: 256px;
+        height: 100%;
+        border-radius: 5px;
+    }
+    .KindCode .search-list{
+        margin-top:2%;
+        border:solid;
+        width:100%;
+        height: 90%;
+        border-width:thin;
+        border-color:darkolivegreen;
+        border-radius:8px;
+        
+    }
+    .KindCode .search-list ul{
+        width:100%;
+        height:100%;
+    }
+        .KindCode .search-list ul li {
+            border-bottom: solid;
+            border-width: thin;
+            width: 200%;
+            height: 6%;
+            text-align: left;
+            line-height: 30px;
+            font-size: 15px;
+            white-space: nowrap;
+            cursor: pointer;
+            color: indigo;
+            list-style: none;
+            padding-left:2%;
+        }
+      .KindCode .search-list ul li div{
+          float:left;
+      }
+            
+    .KindCode .search-list ul li:hover {
+        color: blue;
+        font-size: 16px;
+    }
+        .KindCode .search-list ul li:hover  .seach-move {
+           display:block;
+        }
+        .KindCode .seach-move {
+            position: absolute;
+            width: 13%;
+            height: 10%;
+            background-color:burlywood;
+            margin-left: 260px;
+            border: solid;
+            border-width: thin;
+            border-color:blueviolet;
+            display: none;
+            border-radius:5px;
+        }
+            .KindCode .seach-move div{
+                color:black;
+            }
+
+
+            /*右边操作记录*/
+            .KindCode .body-right {
+                width: 190px;
+                height: 100%;
+                margin-left: 0.5%;
+                border-right: solid;
+                border-color: blueviolet;
+                overflow: auto;
+                border-left: none;
+            }
+    .KindCode .operateNews{
+        
+        width:100%;
+        height:100%;
+        
+    }
+        .KindCode .operateNews ul {
+            width: 100%;
+            height: 100%;
+            
+        }
+        .KindCode .operateNews li {
+            padding:2%;
+            margin-bottom:15%;
+            width: 100%;
+            height: 9%;
+            
+            color:blueviolet;
+            font-weight:600;
+        }
+        .KindCode .operateNews li a{
+            float:none;
+            list-style:none;
+            color:crimson;
+        }
+        .KindCode .operateNews li:hover {
+            background-color:white;
+        }
+
+

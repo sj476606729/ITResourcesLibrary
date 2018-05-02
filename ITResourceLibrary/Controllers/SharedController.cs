@@ -7,7 +7,7 @@ namespace ITResources.Controllers
     public class SharedController : Controller
     {
         // GET: Shared
-        private Operation operation = new Operation();
+        private KindCodeOperation operation = new KindCodeOperation();
 
         //获取单条数据
 
@@ -15,13 +15,12 @@ namespace ITResources.Controllers
         public string GetUserName()
         {
             string username = (string)SessionHelp.Get("UserName");
-            if (username == "shajun")
-            {
-                username = "沙俊";
-            }
-            else if (username == "shajie") { username = "沙杰"; }
-            else if (username == "chenyu") { username = "陈煜"; }
+           
             return username;
+        }
+        public int CodeCount()
+        {
+            return KindCodeOperation.CodeData.Count;
         }
     }
 }

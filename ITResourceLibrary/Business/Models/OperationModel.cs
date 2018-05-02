@@ -2,6 +2,9 @@
 {
     public class OperationModel
     {
+        public string fTable { get; set; }
+        public OperationModel(string TabelName) { fTable = TabelName; }
+        public OperationModel() { }
         public string User { get; set; }
         public string Operate { get; set; }
         public string Title { get; set; }
